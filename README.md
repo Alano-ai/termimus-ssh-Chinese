@@ -41,9 +41,23 @@
 
 | 平台 | 安装包 | 说明 |
 |---|---|---|
-| 🐧 Linux | `.deb` / `.AppImage` | Debian/Ubuntu 软件包或便携式 AppImage（适用于任意发行版） |
+| 🐧 Linux | `.deb` / `.AppImage` / `.pkg.tar.zst` | Debian/Ubuntu 软件包、便携式 AppImage（任意发行版），或 Arch Linux pacman 包 |
 | 🍎 macOS | `.dmg` | 通用二进制 —— 在 Intel 和 Apple Silicon 上均可原生运行 |
 | 🪟 Windows | `.msi` / `.exe` | MSI 安装程序或 NSIS 安装可执行文件 |
+
+### Arch Linux 用户
+
+```bash
+# 方式一：直接安装 Release 附件中的 pacman 包
+sudo pacman -U termimus-ssh-zh-bin-0.7.1-1-x86_64.pkg.tar.zst
+
+# 方式二：使用仓库内 PKGBUILD（aur/termimus-ssh-zh-bin/）
+git clone https://github.com/Alano-ai/termimus-ssh-Chinese.git
+cd termimus-ssh-Chinese/aur/termimus-ssh-zh-bin
+makepkg -si
+```
+
+> 包名 `termimus-ssh-zh-bin`，`provides=(termimus termimus-ssh)`，与原版 `termimus-ssh-bin` 冲突，安装前请先卸载原版。用户数据（`~/.config/termimus/`）不受影响。
 
 > 更希望从源码构建，或想参与贡献？请参阅下方的[快速上手](#-快速上手)。
 
