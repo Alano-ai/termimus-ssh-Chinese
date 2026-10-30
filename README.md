@@ -6,11 +6,11 @@
 
 <p align="center">
   <strong>本地优先、零知识的 SSH 客户端与服务器管理套件</strong><br>
-  面向 Linux、macOS 和 Windows 的现代自托管 Termius 替代品 · <strong>v0.7.0</strong>
+  面向 Linux、macOS 和 Windows 的现代自托管 Termius 替代品 · <strong>v0.7.1</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/termimus/termimus-ssh/releases"><img src="https://img.shields.io/badge/release-v0.7.0-00d2b4.svg?style=flat&label=version" alt="版本 v0.7.0" /></a>
+  <a href="https://github.com/termimus/termimus-ssh/releases"><img src="https://img.shields.io/badge/release-v0.7.1-00d2b4.svg?style=flat&label=version" alt="版本 v0.7.1" /></a>
   <a href="https://github.com/termimus/termimus-ssh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="许可证：MIT" /></a>
   <a href="https://github.com/termimus/termimus-ssh/pkgs/container/termimus-sync"><img src="https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker" alt="Docker 镜像" /></a>
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-brightgreen" alt="平台" />
@@ -122,8 +122,8 @@
 
 | 组件 | 版本 | 软件包 |
 |---|---|---|
-| 桌面客户端（Tauri + Rust + React） | `v0.7.0` | [Releases](https://github.com/termimus/termimus-ssh/releases) |
-| 自托管同步服务器（Go） | `v0.7.0` | [`ghcr.io/termimus/termimus-sync`](https://github.com/termimus/termimus-sync) |
+| 桌面客户端（Tauri + Rust + React） | `v0.7.1` | [Releases](https://github.com/termimus/termimus-ssh/releases) |
+| 自托管同步服务器（Go） | `v0.7.1` | [`ghcr.io/termimus/termimus-sync`](https://github.com/termimus/termimus-sync) |
 
 ---
 
