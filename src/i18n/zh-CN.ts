@@ -471,9 +471,6 @@ export const zhCN = {
   "settings.download": "下载 v{version}",
   "settings.checking": "检查中…",
   "settings.checkForUpdates": "检查更新",
-  "settings.supportTermimus": "支持 Termimus",
-  "settings.supportHint": "Termimus 完全免费且开源。捐赠直接支持持续的开发、域名/托管成本和维护。",
-  "settings.donateKofi": "在 Ko-fi 上捐赠",
   "settings.coreTech": "核心技术",
   "settings.newPasswordTooShort": "新密码至少需要 6 个字符。",
   "settings.newPasswordMismatch": "两次输入的新密码不一致。",
@@ -682,10 +679,6 @@ export const zhCN = {
   "tunnels.stopping": "正在停止…",
   "tunnels.starting": "正在启动…",
   "tunnels.error": "隧道错误：{error}",
-
-  // ===== 支持 =====
-  "support.kofiTitle": "在 Ko-fi 上支持 Termimus",
-  "support.label": "支持",
 
   // ===== 顶栏 =====
   "header.homeTitle": "主页 / 主机（Alt+H）",

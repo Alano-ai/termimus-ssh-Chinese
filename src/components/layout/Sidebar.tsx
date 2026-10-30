@@ -17,7 +17,6 @@ import { useKeychainStore } from "../../stores/useKeychainStore";
 import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
 import { useUpdateStore } from "../../stores/useUpdateStore";
 import { openExternalUrl } from "../../lib/openUrl";
-import kofiIcon from "../../assets/kofi.png";
 import { t } from "../../i18n";
 
 export type ActiveTab = "hosts" | "workspaces" | "terminal" | "sftp" | "keychain" | "tunnels" | "snippets" | "settings";
@@ -159,7 +158,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
             </div>
           </div>
 
-          {/* Micro Footer: Version / Update (left) + Mini Ko-fi pill (right) */}
+          {/* Micro Footer: Version / Update */}
           <div className="flex items-center justify-between overflow-hidden whitespace-nowrap px-1 pt-1.5 border-t border-[var(--border)]/40 mt-1">
             {hasUpdate ? (
               <button
@@ -185,21 +184,6 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
                 v{currentVersion}
               </button>
             )}
-
-            {/* Compact Ko-fi link */}
-            <button
-              type="button"
-              onClick={() => openExternalUrl("https://ko-fi.com/termimus")}
-              title={t("support.kofiTitle")}
-              className="group/kofi inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-container)] transition-colors cursor-pointer"
-            >
-              <img
-                src={kofiIcon}
-                alt="Ko-fi"
-                className="w-3.5 h-auto object-contain transition-transform group-hover/kofi:scale-110 drop-shadow-xs"
-              />
-              <span className="font-medium">{t("support.label")}</span>
-            </button>
           </div>
         </div>
       </div>

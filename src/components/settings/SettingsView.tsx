@@ -39,7 +39,6 @@ import {
 import { CustomSelect } from "../ui/CustomSelect";
 import { api } from "../../lib/api";
 import { openExternalUrl } from "../../lib/openUrl";
-import kofiIcon from "../../assets/kofi.png";
 import { t } from "../../i18n";
 
 type SettingsTab = "security" | "terminal" | "sync" | "known_hosts" | "backup" | "about";
@@ -687,38 +686,6 @@ function AboutTab() {
               </button>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Support & Donation Card */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-low)] p-5 shadow-sm space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start sm:items-center gap-3.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF5E5B]/15 shrink-0 border border-[#FF5E5B]/20">
-              <img src={kofiIcon} alt="Ko-fi" className="w-6 h-auto object-contain drop-shadow-xs" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-sm font-semibold text-[var(--text-primary)]">{t("settings.supportTermimus")}</h4>
-                <span className="rounded bg-[#FF5E5B]/15 px-2 py-0.5 text-[10px] font-semibold text-[#FF5E5B] border border-[#FF5E5B]/30">
-                  Ko-fi
-                </span>
-              </div>
-              <p className="text-xs text-[var(--text-muted)] mt-0.5 max-w-xl">
-                {t("settings.supportHint")}
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => openExternalUrl("https://ko-fi.com/termimus")}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-[#FF5E5B] hover:bg-[#ff4743] text-white transition-all shadow-sm shrink-0 cursor-pointer hover:shadow-md active:scale-95"
-          >
-            <img src={kofiIcon} alt="" className="w-4 h-auto brightness-0 invert" />
-            <span>{t("settings.donateKofi")}</span>
-            <ExternalLink size={13} />
-          </button>
         </div>
       </div>
 

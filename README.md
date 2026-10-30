@@ -11,7 +11,6 @@
 
 <p align="center">
   <a href="https://github.com/termimus/termimus-ssh/releases"><img src="https://img.shields.io/badge/release-v0.7.0-00d2b4.svg?style=flat&label=version" alt="版本 v0.7.0" /></a>
-  <a href="https://ko-fi.com/termimus"><img src="https://img.shields.io/badge/Ko--fi-Support%20Project-FF5E5B?logo=ko-fi&logoColor=white" alt="在 Ko-fi 上支持" /></a>
   <a href="https://github.com/termimus/termimus-ssh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="许可证：MIT" /></a>
   <a href="https://github.com/termimus/termimus-ssh/pkgs/container/termimus-sync"><img src="https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker" alt="Docker 镜像" /></a>
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-brightgreen" alt="平台" />
@@ -23,6 +22,8 @@
 <p align="center">
   <img src="./docs/screenshots/hosts-overview.png" alt="Termimus 主机概览" width="850" />
 </p>
+
+> **衍生版本说明**：本仓库是 [Termimus](https://github.com/termimus/termimus-ssh) 的衍生版本（MIT License，Copyright © 2026 Fadilah Riczky），已进行简体中文汉化并移除了捐赠相关功能。
 
 ---
 
@@ -264,18 +265,6 @@ termimus/
 │
 └── .github/workflows/            # GitHub Actions CI/CD（多架构 GHCR 构建）
 ```
-
----
-
-## 💖 支持本项目
-
-如果你觉得 Termimus 有用，并希望支持它的持续开发（服务器基础设施、域名和新功能），不妨请我们喝杯咖啡！每一份贡献都有助于让项目保持独立、本地优先且完全免费。
-
-<p align="center">
-  <a href="https://ko-fi.com/termimus" target="_blank">
-    <img src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" height="40" alt="在 ko-fi.com 请我喝杯咖啡" />
-  </a>
-</p>
 
 ---
 
