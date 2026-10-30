@@ -6,11 +6,11 @@
 
 <p align="center">
   <strong>本地优先、零知识的 SSH 客户端与服务器管理套件</strong><br>
-  面向 Linux、macOS 和 Windows 的现代自托管 Termius 替代品 · <strong>v0.7.1</strong>
+  面向 Linux、macOS 和 Windows 的现代自托管 Termius 替代品 · <strong>v0.7.2</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/termimus/termimus-ssh/releases"><img src="https://img.shields.io/badge/release-v0.7.1-00d2b4.svg?style=flat&label=version" alt="版本 v0.7.1" /></a>
+  <a href="https://github.com/termimus/termimus-ssh/releases"><img src="https://img.shields.io/badge/release-v0.7.2-00d2b4.svg?style=flat&label=version" alt="版本 v0.7.2" /></a>
   <a href="https://github.com/termimus/termimus-ssh/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="许可证：MIT" /></a>
   <a href="https://github.com/termimus/termimus-ssh/pkgs/container/termimus-sync"><img src="https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker" alt="Docker 镜像" /></a>
   <img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-brightgreen" alt="平台" />
@@ -49,7 +49,7 @@
 
 ```bash
 # 方式一：直接安装 Release 附件中的 pacman 包
-sudo pacman -U termimus-ssh-zh-bin-0.7.1-1-x86_64.pkg.tar.zst
+sudo pacman -U termimus-ssh-zh-bin-0.7.2-1-x86_64.pkg.tar.zst
 
 # 方式二：使用仓库内 PKGBUILD（aur/termimus-ssh-zh-bin/）
 git clone https://github.com/Alano-ai/termimus-ssh-Chinese.git
@@ -136,8 +136,8 @@ makepkg -si
 
 | 组件 | 版本 | 软件包 |
 |---|---|---|
-| 桌面客户端（Tauri + Rust + React） | `v0.7.1` | [Releases](https://github.com/termimus/termimus-ssh/releases) |
-| 自托管同步服务器（Go） | `v0.7.1` | [`ghcr.io/termimus/termimus-sync`](https://github.com/termimus/termimus-sync) |
+| 桌面客户端（Tauri + Rust + React） | `v0.7.2` | [Releases](https://github.com/termimus/termimus-ssh/releases) |
+| 自托管同步服务器（Go） | `v0.7.2` | [`ghcr.io/termimus/termimus-sync`](https://github.com/termimus/termimus-sync) |
 
 ---
 

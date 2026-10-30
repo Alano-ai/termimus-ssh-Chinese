@@ -5,7 +5,7 @@
 # Binary is built from https://github.com/Alano-ai/termimus-ssh-Chinese
 
 pkgname=termimus-ssh-zh-bin
-pkgver=0.7.1
+pkgver=0.7.2
 pkgrel=1
 pkgdesc="自托管 SSH 与服务器管理桌面应用（Termimus 的简体中文汉化版，Tauri + React）"
 arch=('x86_64')
