@@ -1,19 +1,19 @@
-# Termimus Sync Server
+# Termimus 同步服务器
 
-A lightweight, zero-knowledge, self-hosted synchronization relay server for **Termimus** (Local-First SSH & Server Manager).
+为 **Termimus**（本地优先的 SSH 与服务器管理器）打造的一个轻量级、零知识、自托管的同步中继服务器。
 
-## 🔒 Zero-Knowledge Security Architecture
+## 🔒 零知识安全架构
 
-- **End-to-End Encryption (E2EE)**: All hosts, folders, snippets, tunnels, and credentials are encrypted on your local client device using **AES-256-GCM** with a key derived from your Master Password via **Argon2id**.
-- **Blind Relay**: The server only receives, stores, and relays encrypted ciphertext bundles (`EncryptedBackupEnvelope`). It **never** has access to your master password or encryption keys.
-- **Privacy First**: If your server VPS is ever compromised, the attacker only acquires encrypted blobs with zero access to your servers, SSH private keys, or passwords.
-- **Real-Time WebSockets**: Connected devices receive immediate push notifications when changes occur on another device.
+- **端到端加密（E2EE）**：所有主机、文件夹、代码片段、隧道和凭据都在你的本地客户端设备上，使用由主密码经 **Argon2id** 派生的密钥通过 **AES-256-GCM** 进行加密。
+- **盲中继**：服务器只接收、存储和转发加密的密文包（`EncryptedBackupEnvelope`）。它**永远无法**访问你的主密码或加密密钥。
+- **隐私优先**：即使你的服务器 VPS 被入侵，攻击者也只能获得加密后的数据块，无法访问你的服务器、SSH 私钥或密码。
+- **实时 WebSocket**：当其他设备发生更改时，已连接设备会立即收到推送通知。
 
 ---
 
-## 🚀 Quickstart
+## 🚀 快速开始
 
-### Option 1: Docker (Single Command)
+### 方式 1：Docker（单条命令）
 
 ```bash
 docker run -d \
@@ -25,7 +25,7 @@ docker run -d \
   ghcr.io/termimus/termimus-sync:latest
 ```
 
-### Option 2: Docker Compose
+### 方式 2：Docker Compose
 
 ```bash
 cd server
@@ -33,9 +33,9 @@ echo "TERMIMUS_AUTH_TOKEN=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 
-### Option 3: Run from Source (Go)
+### 方式 3：从源码运行（Go）
 
-Requires Go 1.22+:
+需要 Go 1.22+：
 
 ```bash
 cd server
@@ -46,23 +46,23 @@ go run ./cmd/server
 
 ---
 
-## ⚙️ Configuration (Environment Variables)
+## ⚙️ 配置（环境变量）
 
-| Variable | Default | Description |
+| 变量 | 默认值 | 说明 |
 |---|---|---|
-| `PORT` | `8080` | HTTP & WebSocket port to listen on |
-| `DATA_DIR` | `./data` | Directory where SQLite database is stored |
-| `DB_PATH` | `./data/sync.db` | Exact path to the SQLite database file |
-| `TERMIMUS_AUTH_TOKEN` | — | **Required.** Bearer token clients must send. Use a long random value (`openssl rand -hex 32`); the server refuses to start without one. |
-| `TERMIMUS_ALLOW_OPEN_MODE` | — | Set to `1` to run without a token. Local testing only: anyone who can reach the port can overwrite your sync data. |
+| `PORT` | `8080` | 监听的 HTTP 与 WebSocket 端口 |
+| `DATA_DIR` | `./data` | SQLite 数据库存储目录 |
+| `DB_PATH` | `./data/sync.db` | SQLite 数据库文件的精确路径 |
+| `TERMIMUS_AUTH_TOKEN` | — | **必填。** 客户端必须携带的 Bearer 令牌。请使用较长的随机值（`openssl rand -hex 32`）；缺少该值时服务器会拒绝启动。 |
+| `TERMIMUS_ALLOW_OPEN_MODE` | — | 设为 `1` 可无令牌运行。仅用于本地测试：任何能访问该端口的人都可以覆盖你的同步数据。 |
 
 ---
 
-## 📡 API Reference
+## 📡 API 参考
 
-All `/api/v1/sync/*` endpoints require the `Authorization: Bearer <TOKEN>` header (or `?token=<TOKEN>` for WebSockets).
+所有 `/api/v1/sync/*` 端点都要求携带 `Authorization: Bearer <TOKEN>` 请求头（WebSocket 则使用 `?token=<TOKEN>`）。
 
-### 1. Health Check
+### 1. 健康检查
 `GET /health`
 ```json
 {
@@ -72,7 +72,7 @@ All `/api/v1/sync/*` endpoints require the `Authorization: Bearer <TOKEN>` heade
 }
 ```
 
-### 2. Get Sync Status
+### 2. 获取同步状态
 `GET /api/v1/sync/status`
 ```json
 {
@@ -84,7 +84,7 @@ All `/api/v1/sync/*` endpoints require the `Authorization: Bearer <TOKEN>` heade
 }
 ```
 
-### 3. Download Latest Encrypted Bundle
+### 3. 下载最新加密包
 `GET /api/v1/sync/bundle`
 ```json
 {
@@ -93,7 +93,7 @@ All `/api/v1/sync/*` endpoints require the `Authorization: Bearer <TOKEN>` heade
 }
 ```
 
-### 4. Upload New Encrypted Bundle
+### 4. 上传新的加密包
 `POST /api/v1/sync/bundle`
 ```json
 {
@@ -103,10 +103,10 @@ All `/api/v1/sync/*` endpoints require the `Authorization: Bearer <TOKEN>` heade
 }
 ```
 
-### 5. WebSocket Live Notification Stream
+### 5. WebSocket 实时通知流
 `GET /api/v1/sync/ws?token=<TOKEN>`
 
-Clients receive:
+客户端会收到：
 ```json
 {
   "type": "SYNC_UPDATED",
@@ -118,7 +118,7 @@ Clients receive:
 
 ---
 
-## 🌐 Reverse Proxy Examples
+## 🌐 反向代理示例
 
 ### Caddy
 ```caddy
