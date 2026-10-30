@@ -1,6 +1,7 @@
 import { X, Terminal as TerminalIcon, Loader2 } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import { useSessionStore } from "../../stores/useSessionStore";
+import { t } from "../../i18n";
 
 export function TabBar() {
   const { tabs, activeTabId, setActiveTab, closeSession } = useSessionStore(
@@ -15,7 +16,7 @@ export function TabBar() {
   if (tabs.length === 0) {
     return (
       <div className="flex h-10 items-center border-b border-[var(--border)] bg-[var(--card)] px-3">
-        <span className="text-xs text-[var(--text-muted)]">No active session</span>
+        <span className="text-xs text-[var(--text-muted)]">{t("term.noActiveSession")}</span>
       </div>
     );
   }

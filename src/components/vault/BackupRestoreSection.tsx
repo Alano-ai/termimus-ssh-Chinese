@@ -16,6 +16,7 @@ import {
 import { save, open } from "@tauri-apps/plugin-dialog";
 import { api, ImportSummary } from "../../lib/api";
 import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
+import { t } from "../../i18n";
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 
@@ -47,7 +48,7 @@ function PassphraseInput({
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder ?? "Passphrase..."}
+          placeholder={placeholder ?? t("vault.passphrasePlaceholder")}
           className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-9 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
         />
         {value && (
@@ -97,11 +98,11 @@ export function BackupRestoreSection() {
 
       // Native OS save-file dialog
       const selected = await save({
-        title: "Save Termimus Backup",
+        title: t("vault.saveBackupTitle"),
         defaultPath: defaultName,
         filters: isEncrypted
-          ? [{ name: "Encrypted Backup", extensions: ["enc.json", "json"] }]
-          : [{ name: "Backup JSON", extensions: ["json"] }],
+          ? [{ name: t("vault.encryptedBackupFilter"), extensions: ["enc.json", "json"] }]
+          : [{ name: t("vault.backupJsonFilter"), extensions: ["json"] }],
       });
 
       if (!selected) {
@@ -116,7 +117,7 @@ export function BackupRestoreSection() {
       await api.writeLocalFile(selected, json);
       setExportPath(selected);
     } catch (e) {
-      setError(`Export failed: ${String(e)}`);
+      setError(t("vault.exportFailed", { error: String(e) }));
     } finally {
       setExporting(false);
     }
@@ -133,8 +134,8 @@ export function BackupRestoreSection() {
       const selected = await open({
         multiple: false,
         directory: false,
-        title: "Select Termimus Backup File",
-        filters: [{ name: "Backup JSON", extensions: ["json", "enc.json"] }],
+        title: t("vault.selectBackupTitle"),
+        filters: [{ name: t("vault.backupJsonFilter"), extensions: ["json", "enc.json"] }],
       });
 
       if (!selected || typeof selected !== "string") return;
@@ -151,7 +152,7 @@ export function BackupRestoreSection() {
 
       setPendingImportJson(text);
     } catch (e) {
-      setError(`Failed to read backup file: ${String(e)}`);
+      setError(t("vault.readBackupFailed", { error: String(e) }));
     }
   }
 
@@ -174,7 +175,7 @@ export function BackupRestoreSection() {
       }
       setPendingImportJson(text);
     };
-    reader.onerror = () => setError("Failed to read the selected file");
+    reader.onerror = () => setError(t("vault.readSelectedFailed"));
     reader.readAsText(file);
     e.target.value = "";
   }
@@ -197,7 +198,7 @@ export function BackupRestoreSection() {
       setPendingImportJson(null);
       setImportPassphrase("");
     } catch (e) {
-      setError(`Import failed: ${String(e)}`);
+      setError(t("vault.importFailed", { error: String(e) }));
     } finally {
       setImporting(false);
     }
@@ -212,10 +213,10 @@ export function BackupRestoreSection() {
         <Archive size={18} className="text-[var(--secondary)]" />
         <div>
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">
-            Encrypted Backup &amp; Restore
+            {t("vault.encryptedBackupRestore")}
           </h3>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
-            Export all hosts, folders, snippets, workspaces, tunnels, and trusted keys. Credentials stay AES-256-GCM encrypted inside the file.
+            {t("vault.backupDescription")}
           </p>
         </div>
       </div>
@@ -236,7 +237,7 @@ export function BackupRestoreSection() {
         <div className="mb-4 rounded-md border border-[var(--success)]/30 bg-[var(--success)]/10 px-3 py-2.5 text-xs text-[var(--success)]">
           <div className="flex items-center gap-2 font-semibold mb-1">
             <CheckCircle2 size={14} />
-            Backup saved successfully
+            {t("vault.backupSaved")}
           </div>
           <p className="font-mono text-[11px] text-[var(--text-secondary)] break-all">
             {exportPath}
@@ -245,7 +246,7 @@ export function BackupRestoreSection() {
             onClick={() => setExportPath(null)}
             className="mt-1.5 text-[11px] text-[var(--text-muted)] hover:text-[var(--text-primary)] underline"
           >
-            Dismiss
+            {t("vault.dismiss")}
           </button>
         </div>
       )}
@@ -255,16 +256,16 @@ export function BackupRestoreSection() {
         <div className="mb-4 rounded-md border border-[var(--success)]/30 bg-[var(--success)]/10 px-3 py-2.5 text-xs text-[var(--success)] space-y-1.5">
           <div className="flex items-center gap-2 font-semibold">
             <CheckCircle2 size={14} />
-            Backup restored successfully
+            {t("vault.backupRestored")}
           </div>
           <div className="grid grid-cols-3 gap-1.5 font-mono text-[11px] text-[var(--text-secondary)]">
-            <span>Hosts: {importSummary.hosts}</span>
-            <span>Folders: {importSummary.folders}</span>
-            <span>Credentials: {importSummary.credentials}</span>
-            <span>Snippets: {importSummary.snippets}</span>
-            <span>Workspaces: {importSummary.workspace_presets ?? 0}</span>
-            <span>Tunnels: {importSummary.port_forwards}</span>
-            <span>Known Hosts: {importSummary.known_hosts}</span>
+            <span>{t("vault.summaryHosts")}: {importSummary.hosts}</span>
+            <span>{t("vault.summaryFolders")}: {importSummary.folders}</span>
+            <span>{t("vault.summaryCredentials")}: {importSummary.credentials}</span>
+            <span>{t("vault.summarySnippets")}: {importSummary.snippets}</span>
+            <span>{t("vault.summaryWorkspaces")}: {importSummary.workspace_presets ?? 0}</span>
+            <span>{t("vault.summaryTunnels")}: {importSummary.port_forwards}</span>
+            <span>{t("vault.summaryKnownHosts")}: {importSummary.known_hosts}</span>
           </div>
 
           {/* TOFU / MITM conflict warning */}
@@ -272,11 +273,7 @@ export function BackupRestoreSection() {
             <div className="flex items-start gap-2 rounded-md border border-[var(--warning)]/30 bg-[var(--warning)]/10 px-2.5 py-2 text-[11px] text-[var(--warning)]">
               <ShieldAlert size={13} className="shrink-0 mt-0.5" />
               <span>
-                <strong>{importSummary.known_hosts_conflicts}</strong> trusted server key
-                {importSummary.known_hosts_conflicts === 1 ? " was" : "s were"} skipped — the backup had
-                a different fingerprint for {importSummary.known_hosts_conflicts === 1 ? "a host" : "hosts"} you
-                already trust. Your existing fingerprints are kept to protect against MITM attacks.
-                Manually reset any host key in the Known Hosts table above if you intentionally replaced that server.
+                {t("vault.knownHostsConflict", { count: importSummary.known_hosts_conflicts })}
               </span>
             </div>
           )}
@@ -286,8 +283,7 @@ export function BackupRestoreSection() {
             <div className="flex items-start gap-2 rounded-md border border-[var(--warning)]/30 bg-[var(--warning)]/10 px-2.5 py-2 text-[11px] text-[var(--warning)]">
               <Lock size={13} className="shrink-0 mt-0.5" />
               <span>
-                Vault master password was restored from the backup. You have been logged out —
-                please unlock the vault with the backup's master password.
+                {t("vault.masterRestored")}
               </span>
             </div>
           )}
@@ -297,7 +293,7 @@ export function BackupRestoreSection() {
             <div className="flex items-start gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-container)] px-2.5 py-2 text-[11px] text-[var(--text-secondary)]">
               <Info size={13} className="shrink-0 mt-0.5" />
               <span>
-                Pre-restore snapshot saved to:{" "}
+                {t("vault.snapshotSaved")}{" "}
                 <span className="font-mono break-all text-[var(--text-primary)]">
                   {importSummary.safety_snapshot_path}
                 </span>
@@ -309,7 +305,7 @@ export function BackupRestoreSection() {
             onClick={() => setImportSummary(null)}
             className="text-[11px] text-[var(--text-muted)] hover:text-[var(--text-primary)] underline"
           >
-            Dismiss
+            {t("vault.dismiss")}
           </button>
         </div>
       )}
@@ -321,25 +317,24 @@ export function BackupRestoreSection() {
           <div className="flex items-center gap-2">
             <DownloadCloud size={16} className="text-[var(--primary)]" />
             <span className="text-xs font-semibold text-[var(--text-primary)]">
-              Export Backup
+              {t("vault.exportBackup")}
             </span>
           </div>
           <p className="text-[11px] text-[var(--text-muted)]">
-            Save a backup file. Credentials are always AES-256-GCM encrypted inside.
-            Add a passphrase below to also encrypt host IPs, usernames and snippets.
+            {t("vault.exportBackupHint")}
           </p>
 
           <PassphraseInput
-            label="Encrypt entire backup (optional passphrase)"
+            label={t("vault.encryptBackupLabel")}
             value={exportPassphrase}
             onChange={setExportPassphrase}
-            placeholder="Leave blank for standard backup..."
+            placeholder={t("vault.leaveBlankPlaceholder")}
           />
 
           {exportPassphrase.trim() && (
             <p className="text-[11px] text-[var(--primary)] flex items-center gap-1">
               <Lock size={11} />
-              Full-backup encryption enabled (AES-256-GCM + Argon2id)
+              {t("vault.fullEncryptionEnabled")}
             </p>
           )}
 
@@ -353,7 +348,7 @@ export function BackupRestoreSection() {
             ) : (
               <DownloadCloud size={13} />
             )}
-            <span>{exporting ? "Saving..." : "Save Backup File..."}</span>
+            <span>{exporting ? t("common.saving") : t("vault.saveBackupFile")}</span>
           </button>
         </div>
 
@@ -362,11 +357,11 @@ export function BackupRestoreSection() {
           <div className="flex items-center gap-2">
             <UploadCloud size={16} className="text-[var(--secondary)]" />
             <span className="text-xs font-semibold text-[var(--text-primary)]">
-              Restore from File
+              {t("vault.restoreFromFile")}
             </span>
           </div>
           <p className="text-[11px] text-[var(--text-muted)]">
-            Select a Termimus backup file to merge or replace your current data.
+            {t("vault.restoreHint")}
           </p>
 
           {/* Hidden fallback file input */}
@@ -384,7 +379,7 @@ export function BackupRestoreSection() {
             className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-high)] py-2 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-highest)] transition-colors disabled:opacity-50"
           >
             <UploadCloud size={13} />
-            <span>Choose Backup File...</span>
+            <span>{t("vault.chooseBackupFile")}</span>
           </button>
         </div>
       </div>
@@ -396,7 +391,7 @@ export function BackupRestoreSection() {
             <div className="flex items-center gap-2">
               <AlertTriangle size={18} className="text-[var(--warning)]" />
               <h3 className="text-sm font-semibold text-[var(--text-primary)]">
-                Restore Backup
+                {t("vault.restoreBackup")}
               </h3>
               <button
                 onClick={() => { setPendingImportJson(null); setImportPassphrase(""); }}
@@ -412,19 +407,19 @@ export function BackupRestoreSection() {
               <div className="rounded-md border border-[var(--primary)]/30 bg-[var(--primary)]/5 px-3 py-2.5 space-y-2">
                 <p className="text-xs text-[var(--primary)] flex items-center gap-1.5 font-semibold">
                   <Lock size={13} />
-                  This backup is encrypted — enter the passphrase to decrypt it.
+                  {t("vault.encryptedBackupHint")}
                 </p>
                 <PassphraseInput
-                  label="Backup passphrase"
+                  label={t("vault.backupPassphrase")}
                   value={importPassphrase}
                   onChange={setImportPassphrase}
-                  placeholder="Enter backup passphrase..."
+                  placeholder={t("vault.enterBackupPassphrase")}
                 />
               </div>
             )}
 
             <p className="text-xs text-[var(--text-secondary)]">
-              How should this backup be applied to your current data?
+              {t("vault.howToApply")}
             </p>
 
             <div className="space-y-2">
@@ -434,10 +429,10 @@ export function BackupRestoreSection() {
                 className="w-full text-left rounded-lg border border-[var(--border)] bg-[var(--surface-container)] p-3 hover:border-[var(--primary)]/50 transition-colors disabled:opacity-50"
               >
                 <div className="text-xs font-semibold text-[var(--text-primary)]">
-                  Merge <span className="ml-1 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] text-[var(--primary)]">Recommended</span>
+                  {t("vault.merge")} <span className="ml-1 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] text-[var(--primary)]">{t("vault.recommended")}</span>
                 </div>
                 <div className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                  Adds new items and updates existing ones by ID. Trusted host keys with changed fingerprints are kept untouched (MITM protection).
+                  {t("vault.mergeHint")}
                 </div>
               </button>
 
@@ -447,11 +442,10 @@ export function BackupRestoreSection() {
                 className="w-full text-left rounded-lg border border-[var(--danger)]/30 bg-[var(--danger)]/5 p-3 hover:border-[var(--danger)]/60 transition-colors disabled:opacity-50"
               >
                 <div className="text-xs font-semibold text-[var(--danger)]">
-                  Replace All
+                  {t("vault.replaceAll")}
                 </div>
                 <div className="text-[11px] text-[var(--text-muted)] mt-0.5">
-                  Deletes all current hosts, folders, snippets, tunnels and known hosts before restoring. A safety snapshot is auto-saved locally first.
-                  If the backup came from a different vault, you'll be logged out to re-authenticate.
+                  {t("vault.replaceAllHint")}
                 </div>
               </button>
             </div>
@@ -459,7 +453,7 @@ export function BackupRestoreSection() {
             {importing && (
               <div className="flex items-center justify-center gap-2 text-xs text-[var(--primary)]">
                 <Loader2 size={14} className="animate-spin" />
-                Restoring backup...
+                {t("vault.restoringBackup")}
               </div>
             )}
           </div>

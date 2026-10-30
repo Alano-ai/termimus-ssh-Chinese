@@ -24,6 +24,7 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 import { Host } from "../../lib/api";
+import { t } from "../../i18n";
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Distro Types & Metadata powered by official Simple Icons
@@ -210,7 +211,7 @@ const DISTRO_MAP: Record<DistroType, DistroMeta> = {
 };
 
 export const DISTRO_OPTIONS: { id: string; label: string }[] = [
-  { id: "", label: "Auto-detect on SSH login" },
+  { id: "", label: t("hosts.autoDetect") },
   { id: "ubuntu", label: siUbuntu.title },
   { id: "debian", label: siDebian.title },
   { id: "alpine", label: siAlpinelinux.title },
@@ -233,7 +234,7 @@ export const DISTRO_OPTIONS: { id: string; label: string }[] = [
   { id: "slackware", label: siSlackware.title },
   { id: "raspbian", label: siRaspberrypi.title },
   { id: "amazon", label: "Amazon Linux" },
-  { id: "generic", label: "Generic Linux" },
+  { id: "generic", label: t("hosts.genericLinux") },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════

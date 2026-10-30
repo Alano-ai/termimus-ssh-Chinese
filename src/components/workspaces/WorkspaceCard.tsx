@@ -17,6 +17,7 @@ import { useHostStore } from "../../stores/useHostStore";
 import { usePingStore } from "../../stores/usePingStore";
 import { useConfirmStore } from "../../stores/useConfirmStore";
 import { DistroBadge } from "../hosts/DistroBadge";
+import { t } from "../../i18n";
 
 interface WorkspaceCardProps {
   preset: WorkspacePreset;
@@ -45,10 +46,10 @@ export function LayoutBlueprint({
       return (
         <div className="grid h-24 w-full grid-cols-2 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+            <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+            <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
           </div>
         </div>
       );
@@ -57,10 +58,10 @@ export function LayoutBlueprint({
       return (
         <div className="grid h-24 w-full grid-rows-2 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+            <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+            <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
           </div>
         </div>
       );
@@ -69,16 +70,16 @@ export function LayoutBlueprint({
       return (
         <div className="grid h-24 w-full grid-cols-2 grid-rows-2 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+            <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+            <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[2] || "Pane 3"}</span>
+            <span className="truncate">{nodeLabels[2] || t("workspaces.paneLabel", { n: 3 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[3] || "Pane 4"}</span>
+            <span className="truncate">{nodeLabels[3] || t("workspaces.paneLabel", { n: 4 })}</span>
           </div>
         </div>
       );
@@ -87,14 +88,14 @@ export function LayoutBlueprint({
       return (
         <div className="grid h-24 w-full grid-cols-2 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+            <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
           </div>
           <div className="grid grid-rows-2 gap-1.5">
             <div className={baseBox}>
-              <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+              <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
             </div>
             <div className={baseBox}>
-              <span className="truncate">{nodeLabels[2] || "Pane 3"}</span>
+              <span className="truncate">{nodeLabels[2] || t("workspaces.paneLabel", { n: 3 })}</span>
             </div>
           </div>
         </div>
@@ -105,14 +106,14 @@ export function LayoutBlueprint({
         <div className="grid h-24 w-full grid-rows-2 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className="grid grid-cols-2 gap-1.5">
             <div className={baseBox}>
-              <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+              <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
             </div>
             <div className={baseBox}>
-              <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+              <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
             </div>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[2] || "Pane 3"}</span>
+            <span className="truncate">{nodeLabels[2] || t("workspaces.paneLabel", { n: 3 })}</span>
           </div>
         </div>
       );
@@ -121,13 +122,13 @@ export function LayoutBlueprint({
       return (
         <div className="grid h-24 w-full grid-cols-3 gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--canvas)] p-1.5">
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[0] || "Pane 1"}</span>
+            <span className="truncate">{nodeLabels[0] || t("workspaces.paneLabel", { n: 1 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[1] || "Pane 2"}</span>
+            <span className="truncate">{nodeLabels[1] || t("workspaces.paneLabel", { n: 2 })}</span>
           </div>
           <div className={baseBox}>
-            <span className="truncate">{nodeLabels[2] || "Pane 3"}</span>
+            <span className="truncate">{nodeLabels[2] || t("workspaces.paneLabel", { n: 3 })}</span>
           </div>
         </div>
       );
@@ -155,7 +156,7 @@ export function WorkspaceCard({
     return {
       paneIndex: node.paneIndex,
       host,
-      label: node.label || host?.label || `Pane ${node.paneIndex + 1}`,
+      label: node.label || host?.label || t("workspaces.paneLabel", { n: node.paneIndex + 1 }),
     };
   });
 
@@ -173,9 +174,9 @@ export function WorkspaceCard({
 
   const handleDeleteClick = () => {
     confirm({
-      title: "Delete Workspace Preset",
-      message: `Are you sure you want to delete "${preset.name}"? This action cannot be undone.`,
-      confirmLabel: "Delete",
+      title: t("workspaces.deletePresetTitle"),
+      message: t("workspaces.deletePresetMessage", { name: preset.name }),
+      confirmLabel: t("common.delete"),
       isDanger: true,
       onConfirm: () => onDelete(preset.id),
     });
@@ -196,11 +197,11 @@ export function WorkspaceCard({
               </h3>
               {preset.broadcastOnLaunch && (
                 <span
-                  title="Interconnection / Input Broadcast auto-enabled on launch"
+                  title={t("workspaces.broadcastTitle")}
                   className="flex items-center gap-1 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] font-mono text-[var(--primary)] shrink-0"
                 >
                   <Radio size={10} className="animate-pulse" />
-                  <span>Broadcast</span>
+                  <span>{t("workspaces.broadcast")}</span>
                 </span>
               )}
             </div>
@@ -219,21 +220,21 @@ export function WorkspaceCard({
           <div className="flex items-center gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
             <button
               onClick={() => onDuplicate(preset.id)}
-              title="Duplicate preset"
+              title={t("workspaces.duplicatePreset")}
               className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors"
             >
               <Copy size={13} />
             </button>
             <button
               onClick={() => onEdit(preset)}
-              title="Edit preset"
+              title={t("workspaces.editPresetTitle")}
               className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors"
             >
               <Pencil size={13} />
             </button>
             <button
               onClick={handleDeleteClick}
-              title="Delete preset"
+              title={t("workspaces.deletePresetTitle")}
               className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--danger)]/15 hover:text-[var(--danger)] transition-colors"
             >
               <Trash2 size={13} />
@@ -249,7 +250,10 @@ export function WorkspaceCard({
         {/* Nodes Breakdown List */}
         <div className="mt-3.5 flex flex-col gap-1.5 border-t border-[var(--border)]/60 pt-3">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-            Cluster Nodes ({assignedNodes.filter((n) => n.host).length} / {layoutMeta.panes})
+            {t("workspaces.clusterNodes", {
+              connected: assignedNodes.filter((n) => n.host).length,
+              total: layoutMeta.panes,
+            })}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -275,7 +279,7 @@ export function WorkspaceCard({
                     ) : (
                       <span className="flex items-center gap-1.5 text-[var(--text-muted)] italic">
                         <Server size={12} />
-                        <span>Unassigned Node</span>
+                        <span>{t("workspaces.unassignedNode")}</span>
                       </span>
                     )}
                   </div>
@@ -286,7 +290,7 @@ export function WorkspaceCard({
                         ping.online ? "text-emerald-400" : "text-zinc-500"
                       }`}
                     >
-                      {ping.online ? `${ping.latencyMs ?? 0}ms` : "offline"}
+                      {ping.online ? `${ping.latencyMs ?? 0}ms` : t("hosts.offline")}
                     </span>
                   )}
                 </div>
@@ -306,12 +310,12 @@ export function WorkspaceCard({
           {isLaunching ? (
             <>
               <Loader2 size={13} className="animate-spin" />
-              <span>Connecting & Splitting...</span>
+              <span>{t("workspaces.connectingSplitting")}</span>
             </>
           ) : (
             <>
               <Play size={13} className="fill-current" />
-              <span>Launch Cluster</span>
+              <span>{t("workspaces.launchCluster")}</span>
             </>
           )}
         </button>

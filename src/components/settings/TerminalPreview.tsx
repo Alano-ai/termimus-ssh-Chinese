@@ -1,5 +1,6 @@
 import type { TerminalTheme } from "../../lib/terminalThemes";
 import type { TerminalFontSettings } from "../../stores/useTerminalThemeStore";
+import { t } from "../../i18n";
 
 interface Segment {
   text: string;
@@ -25,19 +26,19 @@ export function TerminalPreview({
       { text: "ssh user@192.168.1.10 -p 2200" },
     ],
     [
-      { text: "INFO", color: s.info },
-      { text: ": connected -> session ready" },
+      { text: "信息", color: s.info },
+      { text: "：已连接 -> 会话就绪" },
       { text: " [0O 1lI != <= >=]" },
     ],
     [
-      { text: "WARNING", color: s.warning },
-      { text: ": cipher fallback negotiated for " },
+      { text: "警告", color: s.warning },
+      { text: "：密码回退已协商 " },
       { text: "192.168.1.10:22", color: s.ip, underline: true },
     ],
     [
-      { text: "Build ", color: fg },
-      { text: "completed successfully", color: s.success },
-      { text: " in 1.24s (status: 0)" },
+      { text: "构建 ", color: fg },
+      { text: "成功完成", color: s.success },
+      { text: " 耗时 1.24s（状态：0）" },
     ],
   ];
 
@@ -58,7 +59,7 @@ export function TerminalPreview({
           <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
           <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
           <span className="ml-2 truncate text-[10px] text-[var(--text-muted)]">
-            preview — ssh prod@web-01
+            {t("settings.preview")} — ssh prod@web-01
           </span>
         </div>
         {font && (

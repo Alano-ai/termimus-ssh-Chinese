@@ -19,6 +19,7 @@ import { getAllLeafPanes } from "../../lib/layoutTree";
 import { launchWorkspacePreset } from "../../lib/workspaceLauncher";
 import { WorkspaceCard } from "./WorkspaceCard";
 import { WorkspaceModal } from "./WorkspaceModal";
+import { t } from "../../i18n";
 
 interface WorkspaceViewProps {
   onOpenTerminal: () => void;
@@ -143,8 +144,8 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
     });
 
     openCreateModal({
-      name: `Active Cluster (${activeLeafPanes.length} Nodes)`,
-      description: "Saved from active split screen terminal layout",
+      name: t("term.activeCluster", { count: activeLeafPanes.length }),
+      description: t("workspaces.savedFromSplit"),
       layout: layoutType,
       nodes: capturedNodes,
       broadcastOnLaunch: useSessionStore.getState().isGroupBroadcastActive(activeGroup.id),
@@ -185,11 +186,11 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 <Layers size={18} />
               </div>
               <h1 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
-                Workspaces & Layout Presets
+                {t("workspaces.title")}
               </h1>
             </div>
             <p className="mt-1 text-xs text-[var(--text-secondary)]">
-              Save multi-server cluster layouts and launch interconnected split screens in 1-click
+              {t("workspaces.hint")}
             </p>
           </div>
 
@@ -197,11 +198,11 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
             {canSaveActiveSplit && (
               <button
                 onClick={handleSaveActiveSplit}
-                title="Capture currently open terminal split panes as a reusable preset"
+                title={t("workspaces.captureSplitTitle")}
                 className="flex items-center gap-1.5 rounded-xl border border-[var(--primary)]/40 bg-[var(--primary)]/10 px-3.5 py-2 text-xs font-semibold text-[var(--primary)] hover:bg-[var(--primary)]/20 transition-all shadow-sm"
               >
                 <BookmarkPlus size={14} />
-                <span>Save Active Split ({activeLeafPanes.length})</span>
+                <span>{t("workspaces.saveActiveSplit", { count: activeLeafPanes.length })}</span>
               </button>
             )}
 
@@ -210,7 +211,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
               className="flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-4 py-2 text-xs font-semibold text-black shadow-md transition-all hover:bg-[var(--primary)]/90 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Plus size={14} strokeWidth={2.5} />
-              <span>New Preset</span>
+              <span>{t("workspaces.newPresetShort")}</span>
             </button>
           </div>
         </div>
@@ -227,16 +228,16 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search presets or servers..."
+                placeholder={t("workspaces.searchPlaceholder")}
                 className="h-8 w-56 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] pl-8 pr-2.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--primary)] focus:outline-none transition-all"
               />
             </div>
           </div>
 
           <div className="flex items-center gap-3 text-xs text-[var(--text-muted)] font-mono">
-            <span>{presets.length} Presets saved</span>
+            <span>{t("workspaces.presetsSaved", { count: presets.length })}</span>
             <span>•</span>
-            <span>{hosts.length} Available hosts</span>
+            <span>{t("workspaces.availableHosts", { count: hosts.length })}</span>
           </div>
         </div>
       </div>
@@ -249,12 +250,12 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
               <Layers size={26} />
             </div>
             <h2 className="text-sm font-semibold text-[var(--text-primary)]">
-              {searchQuery ? "No matching workspace presets" : "No Workspace Presets yet"}
+              {searchQuery ? t("workspaces.noMatchingPresets") : t("workspaces.noPresets")}
             </h2>
             <p className="mt-1 max-w-sm text-xs text-[var(--text-muted)]">
               {searchQuery
-                ? "Try searching for a different keyword or reset the filter"
-                : "Create custom split layouts for multi-server operations, web/database pairs, and microservice clusters."}
+                ? t("workspaces.noMatchHint")
+                : t("workspaces.noPresetsHint")}
             </p>
 
             {!searchQuery && (
@@ -264,43 +265,43 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                   className="flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-4 py-2 text-xs font-semibold text-black shadow-md hover:bg-[var(--primary)]/90 transition-colors"
                 >
                   <Plus size={14} />
-                  <span>Create First Preset</span>
+                  <span>{t("workspaces.createFirstPreset")}</span>
                 </button>
 
                 {hosts.length > 0 && (
                   <div className="mt-4 flex flex-col items-center gap-2">
                     <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wider">
-                      Or start from a popular template:
+                      {t("workspaces.popularTemplate")}
                     </span>
                     <div className="flex flex-wrap items-center justify-center gap-2">
                       <button
                         onClick={() =>
-                          handleCreateStarterPreset("split-vertical", "Dual Server Cluster")
+                          handleCreateStarterPreset("split-vertical", t("workspaces.starterDualServer"))
                         }
                         className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] transition-colors"
                       >
                         <Zap size={12} className="text-[var(--primary)]" />
-                        <span>Side by Side (1×2)</span>
+                        <span>{t("workspaces.layoutSideBySide")}</span>
                       </button>
 
                       <button
                         onClick={() =>
-                          handleCreateStarterPreset("split-1-2", "Web + DB + Worker (3)")
+                          handleCreateStarterPreset("split-1-2", t("workspaces.starterWebDbWorker"))
                         }
                         className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] transition-colors"
                       >
                         <Server size={12} className="text-[var(--primary)]" />
-                        <span>1 Large + 2 Stacked (3)</span>
+                        <span>{t("workspaces.layout1Large2Stacked")}</span>
                       </button>
 
                       <button
                         onClick={() =>
-                          handleCreateStarterPreset("grid-4", "Quad Microservices (4)")
+                          handleCreateStarterPreset("grid-4", t("workspaces.starterQuadMicro"))
                         }
                         className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-1.5 text-xs text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--text-primary)] transition-colors"
                       >
                         <Layers size={12} className="text-[var(--primary)]" />
-                        <span>2×2 Quad Grid (4)</span>
+                        <span>{t("workspaces.layoutQuad")}</span>
                       </button>
                     </div>
                   </div>
@@ -346,7 +347,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Zap size={13} />
-                <span>Launch Workspace</span>
+                <span>{t("workspaces.launchWorkspace")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -360,7 +361,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Duplicate Preset</span>
+                <span>{t("workspaces.duplicatePreset")}</span>
               </button>
 
               {/* Edit */}
@@ -372,7 +373,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Pencil size={13} />
-                <span>Edit Preset</span>
+                <span>{t("workspaces.editPresetTitle")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -381,9 +382,9 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
               <button
                 onClick={() => {
                   useConfirmStore.getState().confirm({
-                    title: "Delete Workspace Preset",
-                    message: `Are you sure you want to delete "${contextMenu.preset!.name}"? This action cannot be undone.`,
-                    confirmLabel: "Delete",
+                    title: t("workspaces.deletePresetTitle"),
+                    message: t("workspaces.deletePresetMessage", { name: contextMenu.preset!.name }),
+                    confirmLabel: t("common.delete"),
                     isDanger: true,
                     onConfirm: () => deletePreset(contextMenu.preset!.id),
                   });
@@ -392,7 +393,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--danger)] hover:text-white transition-colors group"
               >
                 <Trash2 size={13} />
-                <span>Delete Preset</span>
+                <span>{t("workspaces.deletePreset")}</span>
               </button>
             </>
           ) : (
@@ -406,7 +407,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Plus size={13} />
-                <span>New Preset</span>
+                <span>{t("workspaces.newPresetShort")}</span>
               </button>
 
               {canSaveActiveSplit && (
@@ -418,7 +419,7 @@ export function WorkspaceView({ onOpenTerminal }: WorkspaceViewProps) {
                   className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
                 >
                   <BookmarkPlus size={13} />
-                  <span>Save Active Split ({activeLeafPanes.length})</span>
+                  <span>{t("workspaces.saveActiveSplit", { count: activeLeafPanes.length })}</span>
                 </button>
               )}
             </>

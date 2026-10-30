@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { api, PortForwardRule, PortForwardInput } from "../lib/api";
+import { t } from "../i18n";
 
 interface TunnelState {
   rules: PortForwardRule[];
@@ -70,7 +71,7 @@ export const useTunnelStore = create<TunnelState>((set, get) => ({
       }
       await get().refresh();
     } catch (e) {
-      set({ error: `Tunnel error: ${String(e)}` });
+      set({ error: t("tunnels.error", { error: String(e) }) });
     } finally {
       set({ startingRuleId: null });
     }

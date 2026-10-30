@@ -4,6 +4,7 @@ import { useHostStore } from "../../stores/useHostStore";
 import { useSessionStore } from "../../stores/useSessionStore";
 import { useVaultStore } from "../../stores/useVaultStore";
 import { Host } from "../../lib/api";
+import { t } from "../../i18n";
 
 // openSession is a single stable action reference; selecting it directly avoids
 // subscribing this modal to unrelated useSessionStore state changes.
@@ -142,7 +143,7 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type host, IP, or user@hostname:port to connect..."
+            placeholder={t("qc.placeholder")}
             className="flex-1 bg-transparent font-mono text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none"
           />
           {input && (
@@ -150,7 +151,7 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
               type="submit"
               className="rounded bg-[var(--primary)] px-2 py-0.5 font-mono text-[10px] font-semibold text-[var(--on-primary)] hover:bg-[var(--primary-hover)] transition-colors"
             >
-              Enter ↵
+              {t("qc.enter")}
             </button>
           )}
           <button
@@ -164,7 +165,7 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
 
         {/* Action button to create new configured host */}
         <div className="flex items-center justify-between border-b border-[var(--border)]/60 bg-[var(--canvas)]/40 px-3 py-1.5 text-[11px] text-[var(--text-muted)]">
-          <span>{input.trim() ? "Search results / Press Enter to connect" : "Saved Hosts"}</span>
+          <span>{input.trim() ? t("qc.searchResults") : t("qc.savedHosts")}</span>
           <button
             type="button"
             onClick={() => {
@@ -174,7 +175,7 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
             className="flex items-center gap-1 text-[var(--primary)] hover:underline"
           >
             <Plus size={12} />
-            <span>New Saved Host...</span>
+            <span>{t("qc.newSavedHost")}</span>
           </button>
         </div>
 
@@ -195,20 +196,20 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
                 </div>
                 <div className="min-w-0">
                   <div className="truncate text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
-                    <span>Run Local Terminal</span>
+                    <span>{t("qc.runLocalTerminal")}</span>
                     <span className="rounded bg-[var(--surface-container)] px-1.5 py-0.2 font-mono text-[9px] text-[var(--primary)] border border-[var(--border)]">
                       device
                     </span>
                   </div>
                   <div className="truncate font-mono text-[11px] text-[var(--text-muted)]">
-                    Spawn interactive shell on this computer
+                    {t("qc.localDesc")}
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
                 <span className="rounded bg-[var(--primary)]/15 px-2 py-1 font-mono text-[10px] font-semibold text-[var(--primary)] opacity-80 group-hover:opacity-100 transition-opacity">
-                  Launch ➔
+                  {t("qc.launch")}
                 </span>
               </div>
             </button>
@@ -219,13 +220,13 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
               {hosts.length === 0 ? (
                 <>
                   <Server size={28} className="mx-auto mb-2 opacity-30" />
-                  <p>No saved hosts yet.</p>
+                  <p>{t("qc.noHosts")}</p>
                   <p className="mt-1 font-mono text-[11px]">
-                    Type <code className="text-[var(--primary)]">user@hostname</code> above to connect ad-hoc, or click "New Saved Host".
+                    {t("qc.noHostsHintPrefix")} <code className="text-[var(--primary)]">user@hostname</code> {t("qc.noHostsHintSuffix")}
                   </p>
                 </>
               ) : (
-                <p>No saved hosts match "{input}". Press Enter to connect as ad-hoc address.</p>
+                <p>{t("qc.noMatch", { input })}</p>
               )}
             </div>
           ) : (
@@ -259,7 +260,7 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
                     </span>
                   ))}
                   <span className="rounded bg-[var(--primary)]/15 px-2 py-1 font-mono text-[10px] font-semibold text-[var(--primary)] opacity-0 group-hover:opacity-100 transition-opacity">
-                    Connect ➔
+                    {t("qc.connect")}
                   </span>
                 </div>
               </button>
@@ -269,8 +270,8 @@ export function QuickConnectModal({ isOpen, onClose, onConnect }: QuickConnectMo
 
         {/* Footer Shortcut Helper */}
         <div className="flex items-center justify-between border-t border-[var(--border)] bg-[var(--canvas)] px-3.5 py-2 font-mono text-[10px] text-[var(--text-muted)]">
-          <span>Tip: Press Ctrl+K anytime to open</span>
-          <span>Esc to close</span>
+          <span>{t("qc.tip")}</span>
+          <span>{t("qc.escToClose")}</span>
         </div>
       </div>
     </div>

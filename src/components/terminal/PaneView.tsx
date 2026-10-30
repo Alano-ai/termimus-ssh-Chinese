@@ -15,6 +15,7 @@ import { useTerminalThemeStore } from "../../stores/useTerminalThemeStore";
 import { getTerminalTheme } from "../../lib/terminalThemes";
 import { XtermView } from "./XtermView";
 import { DropZoneOverlay } from "./DropZoneOverlay";
+import { t } from "../../i18n";
 
 interface PaneViewProps {
   pane: PaneLeaf;
@@ -212,7 +213,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                       }
                       handlePointerDownTab(e, tab.id);
                     }}
-                    title="Drag to split screen or dock. Middle-click or ✕ to close."
+                    title={t("term.dragToSplitOrDock")}
                     className={`group relative flex h-5.5 max-w-[160px] cursor-grab active:cursor-grabbing items-center gap-1.5 rounded-md px-2 text-[11px] font-mono transition-all select-none ${
                       isActiveInPane
                         ? isFocused
@@ -243,7 +244,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                         e.stopPropagation();
                         closeSession(tab.id);
                       }}
-                      title="Close tab"
+                      title={t("term.closeTab")}
                       className={`flex h-4 w-4 shrink-0 items-center justify-center rounded transition-all cursor-pointer ${
                         isActiveInPane
                           ? "opacity-60 hover:opacity-100 hover:bg-white/15 text-[var(--text-muted)] hover:text-white"
@@ -258,7 +259,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
             ) : (
               <div
                 onPointerDown={(e) => activeTab && handlePointerDownTab(e, activeTab.id)}
-                title="Drag to move or split pane"
+                title={t("term.dragMoveSplit")}
                 className="flex items-center gap-2 cursor-grab active:cursor-grabbing font-mono text-[11px] truncate select-none"
               >
                 {activeTab?.connecting ? (
@@ -271,7 +272,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                   />
                 )}
                 <span className="font-medium text-[var(--text-primary)] truncate">
-                  {activeTab?.hostLabel || "Terminal"}
+                  {activeTab?.hostLabel || t("term.terminal")}
                 </span>
                 <span className="text-[10px] text-[var(--text-muted)] truncate hidden sm:inline">
                   {activeTab?.hostAddress}
@@ -279,7 +280,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                 {isBroadcast && (
                   <span className="flex items-center gap-1 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[9px] font-mono font-medium text-[var(--primary)] border border-[var(--primary)]/30 shrink-0">
                     <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] animate-ping shrink-0" />
-                    SYNC
+                    {t("term.syncBadge")}
                   </span>
                 )}
               </div>
@@ -295,8 +296,8 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
               }}
               title={
                 isBroadcast
-                  ? "Broadcast Input Active — Click to disconnect terminals (Alt+B)"
-                  : "Interconnect Terminals — Broadcast input to all split panes (Alt+B)"
+                  ? t("term.broadcastActiveTitle")
+                  : t("term.interconnectTitle")
               }
               className={`flex h-5 items-center gap-1 rounded px-1.5 text-xs transition-colors ${
                 isBroadcast
@@ -307,7 +308,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
               }`}
             >
               <Radio size={11} className={isBroadcast ? "animate-pulse" : ""} />
-              <span className="text-[10px] font-mono">{isBroadcast ? "SYNC ON" : "SYNC"}</span>
+              <span className="text-[10px] font-mono">{isBroadcast ? t("term.syncOnBadge") : t("term.syncBadge")}</span>
             </button>
             <div className={`h-3 w-[1px] shrink-0 mx-0.5 ${isLight ? "bg-black/15" : "bg-white/15"}`} />
             <button
@@ -315,7 +316,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                 e.stopPropagation();
                 handleSplitRight();
               }}
-              title="Split Right (Columns)"
+              title={t("term.splitRightColumns")}
               className={`flex h-5 w-5 items-center justify-center rounded transition-colors ${
                 isLight
                   ? "text-black/60 hover:bg-black/10 hover:text-[var(--primary)]"
@@ -329,7 +330,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                 e.stopPropagation();
                 handleSplitDown();
               }}
-              title="Split Down (Rows)"
+              title={t("term.splitDownRows")}
               className={`flex h-5 w-5 items-center justify-center rounded transition-colors ${
                 isLight
                   ? "text-black/60 hover:bg-black/10 hover:text-[var(--primary)]"
@@ -343,7 +344,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                 e.stopPropagation();
                 toggleMaximizePane(pane.id);
               }}
-              title={isMaximized ? "Restore Split View" : "Maximize Pane"}
+              title={isMaximized ? t("term.restoreSplitView") : t("term.maximizePane")}
               className={`flex h-5 w-5 items-center justify-center rounded transition-colors ${
                 isLight
                   ? "text-black/60 hover:bg-black/10 hover:text-[var(--primary)]"
@@ -359,7 +360,7 @@ export function PaneView({ pane, visible = true }: PaneViewProps) {
                   closeSession(activeTab.id);
                 }
               }}
-              title="Close Active Terminal"
+              title={t("term.closeActiveTerminal")}
               className="flex h-5 w-5 items-center justify-center rounded text-[var(--text-muted)] hover:bg-[var(--danger)] hover:text-white transition-colors"
             >
               <X size={12} />

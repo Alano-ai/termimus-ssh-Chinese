@@ -7,6 +7,7 @@ import { useSnippetStore } from "./useSnippetStore";
 import { useTunnelStore } from "./useTunnelStore";
 import { useKnownHostsStore } from "./useKnownHostsStore";
 import { useWorkspaceStore } from "./useWorkspaceStore";
+import { t } from "../i18n";
 
 export interface ConnectedDevice {
   id: string;
@@ -97,7 +98,7 @@ export const useSyncStore = create<SyncState>()(
       },
       setAutoSync: (autoSync) => {
         if (autoSync && !get().syncPassword.trim()) {
-          set({ lastError: "Please set a Sync Passphrase before enabling Live Sync to ensure end-to-end encryption." });
+          set({ lastError: t("sync.setPassphraseFirst") });
           return;
         }
         set({ autoSync });
@@ -111,7 +112,7 @@ export const useSyncStore = create<SyncState>()(
           try {
             await api.syncSecretsSave(legacy.authToken, legacy.syncPassword);
           } catch (e) {
-            set({ lastError: `${String(e)}. Sync secrets are kept in memory only and must be re-entered after restart.` });
+            set({ lastError: t("sync.secretsInMemory", { error: String(e) }) });
           }
           return;
         }
@@ -128,7 +129,7 @@ export const useSyncStore = create<SyncState>()(
         const { serverUrl, authToken } = get();
         const cleanUrl = serverUrl.trim().replace(/\/+$/, "");
         if (!cleanUrl) {
-          return { ok: false, error: "Server URL is required" };
+          return { ok: false, error: t("sync.serverUrlRequired") };
         }
 
         try {
@@ -145,7 +146,7 @@ export const useSyncStore = create<SyncState>()(
               revision: res.revision,
             };
           }
-          const errMsg = res.error || "Connection failed";
+          const errMsg = res.error || t("sync.connectionFailed");
           set({ syncStatus: "error", lastError: errMsg });
           return { ok: false, error: errMsg };
         } catch (e) {
@@ -158,11 +159,11 @@ export const useSyncStore = create<SyncState>()(
       push: async () => {
         const { serverUrl, authToken, syncPassword, deviceName, getDeviceId } = get();
         const cleanUrl = serverUrl.trim().replace(/\/+$/, "");
-        if (!cleanUrl) throw new Error("Server URL is not configured");
+        if (!cleanUrl) throw new Error(t("sync.serverUrlNotConfigured"));
 
         const cleanPassword = syncPassword.trim();
         if (!cleanPassword) {
-          throw new Error("Sync Passphrase is required. Termimus enforces zero-knowledge E2EE encryption before uploading to the relay.");
+          throw new Error(t("sync.passphraseRequiredFull"));
         }
 
         const deviceId = getDeviceId();
@@ -197,7 +198,7 @@ export const useSyncStore = create<SyncState>()(
       pull: async () => {
         const { serverUrl, authToken, syncPassword } = get();
         const cleanUrl = serverUrl.trim().replace(/\/+$/, "");
-        if (!cleanUrl) throw new Error("Server URL is not configured");
+        if (!cleanUrl) throw new Error(t("sync.serverUrlNotConfigured"));
 
         set({ syncStatus: "syncing", lastError: null });
 
@@ -302,7 +303,7 @@ function scheduleSaveSecrets() {
       await api.syncSecretsSave(authToken, syncPassword);
     } catch (e) {
       useSyncStore.setState({
-        lastError: `${String(e)}. Sync secrets are kept in memory only and must be re-entered after restart.`,
+        lastError: t("sync.secretsInMemory", { error: String(e) }),
       });
     }
   }, 500);

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { api, Host } from "../lib/api";
+import { t } from "../i18n";
 import {
   PaneNode,
   SplitDirection,
@@ -307,7 +308,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     const newTab: SshTab = {
       id: sessionId,
       hostId: "local",
-      hostLabel: `Local (${shellName})`,
+      hostLabel: t("term.localWithShell", { shell: shellName }),
       hostAddress: "localhost",
       connected: false,
       connecting: true,
@@ -320,7 +321,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         const newGroupObj: TerminalGroup = {
           id: generateGroupId(),
           rootPane: initial,
-          label: `Local: ${shellName}`,
+          label: t("term.localWithShell", { shell: shellName }),
         };
 
         return {
@@ -370,7 +371,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     const newTab: SshTab = {
       id: sessionId,
       hostId: "local",
-      hostLabel: "Local Terminal",
+      hostLabel: t("term.localTerminal"),
       hostAddress: "localhost",
       connected: false,
       connecting: true,

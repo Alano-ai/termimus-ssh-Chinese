@@ -3,6 +3,7 @@ import { AlertTriangle, File, Folder } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import { useSftpStore } from "../../stores/useSftpStore";
 import { formatBytes, formatDate } from "../../lib/format";
+import { t } from "../../i18n";
 
 /**
  * Asked once per planned destination that already exists on the other side.
@@ -42,7 +43,7 @@ export function TransferConflictModal() {
         className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface-low)] p-5 shadow-2xl animate-in zoom-in-95 duration-150"
         role="dialog"
         aria-modal="true"
-        aria-label="Transfer conflict"
+        aria-label={t("sftp.transferConflict")}
       >
         {/* Header */}
         <div className="flex items-start gap-3 mb-4">
@@ -51,10 +52,10 @@ export function TransferConflictModal() {
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">
-              {item.isDir ? "Folder already exists" : "File already exists"}
+              {item.isDir ? t("sftp.folderExists") : t("sftp.fileExists")}
             </h3>
             <p className="text-[11px] text-[var(--text-muted)]">
-              Conflict {pendingConflicts.index + 1} of {pendingConflicts.items.length}
+              {t("sftp.conflictCount", { current: pendingConflicts.index + 1, total: pendingConflicts.items.length })}
             </p>
           </div>
         </div>
@@ -73,31 +74,31 @@ export function TransferConflictModal() {
           </div>
           <div className="space-y-1 text-[11px]">
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[var(--text-muted)]">Transfer from</span>
+              <span className="text-[var(--text-muted)]">{t("sftp.transferFrom")}</span>
               <span className="truncate font-mono text-[var(--text-secondary)]" title={item.from}>
                 {item.from}
               </span>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <span className="text-[var(--text-muted)]">Destination</span>
+              <span className="text-[var(--text-muted)]">{t("sftp.destination")}</span>
               <span className="truncate font-mono text-[var(--text-secondary)]" title={item.to}>
                 {item.to}
               </span>
             </div>
             {!item.isDir && (
               <div className="flex items-center justify-between gap-3">
-                <span className="text-[var(--text-muted)]">Size</span>
+                <span className="text-[var(--text-muted)]">{t("sftp.size")}</span>
                 <span className="font-mono text-[var(--text-secondary)]">
                   {formatBytes(item.size)}
                   {existing && existing.size !== item.size
-                    ? ` (existing: ${formatBytes(existing.size)})`
+                    ? ` ${t("sftp.existingSize", { size: formatBytes(existing.size) })}`
                     : ""}
                 </span>
               </div>
             )}
             {existing?.modified != null && !item.isDir && (
               <div className="flex items-center justify-between gap-3">
-                <span className="text-[var(--text-muted)]">Existing modified</span>
+                <span className="text-[var(--text-muted)]">{t("sftp.existingModified")}</span>
                 <span className="font-mono text-[var(--text-secondary)]">
                   {formatDate(existing.modified)}
                 </span>
@@ -108,8 +109,7 @@ export function TransferConflictModal() {
 
         {item.isDir && (
           <p className="mb-3 text-[11px] text-[var(--text-muted)]">
-            Replace merges the contents of both folders: files with the same name are overwritten,
-            other files are kept.
+            {t("sftp.replaceMergesHint")}
           </p>
         )}
 
@@ -120,7 +120,7 @@ export function TransferConflictModal() {
             onClick={() => resolveConflict("cancel")}
             className="rounded-xl px-3 py-1.5 text-xs font-medium text-[var(--danger)] hover:bg-[var(--danger)]/10 transition"
           >
-            Cancel Transfer
+            {t("sftp.cancelTransfer")}
           </button>
 
           <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export function TransferConflictModal() {
               onClick={() => resolveConflict("ignore")}
               className="rounded-xl border border-[var(--border)] bg-[var(--surface-container)] px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-high)] hover:text-white transition"
             >
-              Ignore
+              {t("sftp.ignore")}
             </button>
             <button
               type="button"
@@ -137,7 +137,7 @@ export function TransferConflictModal() {
               onClick={() => resolveConflict("replace")}
               className="rounded-xl bg-[var(--primary)] px-4 py-1.5 text-xs font-semibold text-[var(--on-primary)] shadow-sm hover:bg-[var(--primary-hover)] transition"
             >
-              Replace
+              {t("sftp.replace")}
             </button>
             {!isLast && (
               <button
@@ -145,7 +145,7 @@ export function TransferConflictModal() {
                 onClick={() => resolveConflict("replaceAll")}
                 className="rounded-xl border border-[var(--primary)]/40 px-3.5 py-1.5 text-xs font-semibold text-[var(--primary)] hover:bg-[var(--primary)]/10 transition"
               >
-                Replace All
+                {t("sftp.replaceAll")}
               </button>
             )}
           </div>

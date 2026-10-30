@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Host } from "../../lib/api";
 import { DistroBadge } from "./DistroBadge";
+import { t } from "../../i18n";
 
 export interface HostListRowProps {
   host: Host;
@@ -55,14 +56,14 @@ export const HostListRow = memo(function HostListRow({
         {isConnecting ? (
           <span
             className="absolute top-1 left-1 z-10 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--primary)]"
-            title="Connecting..."
+            title={t("common.connecting")}
           >
             <span className="h-1 w-1 rounded-full bg-black animate-ping" />
           </span>
         ) : !isOnline ? (
           <span
             className="absolute top-1 left-1 z-10 h-1.5 w-1.5 rounded-full bg-rose-500"
-            title="Offline"
+            title={t("hosts.offline")}
           />
         ) : latencyMs !== undefined && latencyMs !== null ? (
           <span
@@ -73,12 +74,12 @@ export const HostListRow = memo(function HostListRow({
                 ? "bg-amber-400"
                 : "bg-rose-400"
             }`}
-            title={`Online · ${latencyMs}ms`}
+            title={t("hosts.onlineLatency", { ms: latencyMs })}
           />
         ) : (
           <span
             className="absolute top-1 left-1 z-10 h-1.5 w-1.5 rounded-full bg-emerald-400"
-            title="Online"
+            title={t("hosts.online")}
           />
         )}
       </div>
@@ -91,9 +92,9 @@ export const HostListRow = memo(function HostListRow({
         {host.jump_host_id && (
           <span
             className="shrink-0 px-1 py-0.2 rounded text-[9px] font-mono font-medium bg-[var(--surface-high)] text-[var(--text-muted)] border border-[var(--border)]"
-            title="Connected via SSH Bastion / Jump Host"
+            title={t("hosts.jumpHostTitle")}
           >
-            jump
+            {t("hosts.jump")}
           </span>
         )}
       </div>
@@ -138,7 +139,7 @@ export const HostListRow = memo(function HostListRow({
         {/* Quick action: SFTP */}
         <button
           onClick={(e) => onSftp(e, host)}
-          title="SFTP Browser"
+          title={t("nav.sftp")}
           className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-0 group-hover:opacity-100 hover:bg-[var(--surface-high)] hover:text-white transition"
         >
           <FolderOpen size={13} />
@@ -148,7 +149,7 @@ export const HostListRow = memo(function HostListRow({
         <div className="relative shrink-0">
           <button
             onClick={() => onToggleMenu(host.id)}
-            title="Options"
+            title={t("hosts.options")}
             className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-0 group-hover:opacity-100 hover:bg-[var(--surface-high)] hover:text-white transition"
           >
             <MoreVertical size={14} />
@@ -164,7 +165,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--primary)] hover:text-[var(--on-primary)] transition"
               >
                 <Terminal size={13} />
-                <span>Connect SSH</span>
+                <span>{t("hosts.connectSsh")}</span>
               </button>
 
               <button
@@ -175,7 +176,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
               >
                 <FolderOpen size={13} />
-                <span>SFTP Files</span>
+                <span>{t("hosts.sftpFiles")}</span>
               </button>
 
               <button
@@ -186,7 +187,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
               >
                 <Waypoints size={13} />
-                <span>Tunnels</span>
+                <span>{t("hosts.tunnels")}</span>
               </button>
 
               <div className="my-1 border-t border-[var(--border)]" />
@@ -199,7 +200,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
               >
                 <CopyPlus size={13} />
-                <span>Duplicate</span>
+                <span>{t("hosts.duplicate")}</span>
               </button>
 
               <button
@@ -210,7 +211,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
               >
                 <Pencil size={13} />
-                <span>Edit Host</span>
+                <span>{t("hosts.editHost")}</span>
               </button>
 
               <div className="my-1 border-t border-[var(--border)]" />
@@ -223,7 +224,7 @@ export const HostListRow = memo(function HostListRow({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--danger)] hover:bg-[var(--danger)]/20 transition"
               >
                 <Trash2 size={13} />
-                <span>Delete</span>
+                <span>{t("common.delete")}</span>
               </button>
             </div>
           )}

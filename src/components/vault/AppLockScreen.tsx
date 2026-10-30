@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useVaultStore } from "../../stores/useVaultStore";
 import { useSettingsStore } from "../../stores/useSettingsStore";
 import { useSessionStore } from "../../stores/useSessionStore";
+import { t } from "../../i18n";
 
 /**
  * Full-screen app lock (Header padlock). Covers the whole window with a
@@ -65,7 +66,7 @@ export function AppLockScreen() {
     try {
       const success = await unlockWithBiometric();
       if (!success) {
-        setLocalError("Biometric authentication was cancelled or not recognized.");
+        setLocalError(t("vault.biometricCancelled"));
       }
     } catch (err) {
       setLocalError(String(err));
@@ -90,12 +91,12 @@ export function AppLockScreen() {
           </div>
           <div>
             <h2 className="text-base font-semibold text-[var(--text-primary)]">
-              Termimus is Locked
+              {t("vault.appLocked")}
             </h2>
             <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
               {activeSessions > 0
-                ? `${activeSessions} active session${activeSessions === 1 ? "" : "s"} kept alive — remote tasks are still running.`
-                : "Enter your master password to unlock the app."}
+                ? t("vault.sessionsKeptAlive", { count: activeSessions })
+                : t("vault.enterMasterUnlock")}
             </p>
           </div>
         </div>
@@ -116,13 +117,13 @@ export function AppLockScreen() {
                 className="w-full flex items-center justify-center gap-2.5 rounded-xl border border-[var(--primary)]/30 bg-[var(--primary)]/10 hover:bg-[var(--primary)]/18 text-[var(--primary)] py-2.5 px-4 text-sm font-semibold transition shadow-sm hover:shadow active:scale-[0.99] disabled:opacity-50 cursor-pointer"
               >
                 <Fingerprint size={18} className={biometricUnlocking ? "animate-pulse" : ""} />
-                <span>{biometricUnlocking ? "Waiting for Touch ID..." : "Unlock with Touch ID"}</span>
+                <span>{biometricUnlocking ? t("vault.waitingTouchId") : t("vault.unlockTouchId")}</span>
               </button>
 
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-[var(--border)]" />
                 <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-medium">
-                  or enter master password
+                  {t("vault.orEnterMaster")}
                 </span>
                 <div className="h-px flex-1 bg-[var(--border)]" />
               </div>
@@ -131,7 +132,7 @@ export function AppLockScreen() {
 
           <div>
             <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-              Master Password
+              {t("vault.masterPassword")}
             </label>
             <div className="relative">
               <input
@@ -140,7 +141,7 @@ export function AppLockScreen() {
                 autoComplete="off"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password..."
+                placeholder={t("vault.enterPassword")}
                 className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 pl-9 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--accent)] focus:outline-none"
               />
               <KeyRound
@@ -155,7 +156,7 @@ export function AppLockScreen() {
             disabled={submitting || !password}
             className="w-full rounded-lg bg-[var(--accent)] py-2 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
           >
-            {submitting ? "Verifying..." : "Unlock"}
+            {submitting ? t("vault.verifying") : t("vault.unlock")}
           </button>
         </form>
       </div>

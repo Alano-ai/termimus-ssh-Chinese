@@ -14,6 +14,7 @@ import {
 } from "../../stores/useTerminalThemeStore";
 import { CustomSelect } from "../ui/CustomSelect";
 import { TerminalPreview } from "./TerminalPreview";
+import { t } from "../../i18n";
 
 function Toggle({
   checked,
@@ -68,11 +69,10 @@ export function TerminalThemeTab() {
         <div className="border-b border-[var(--border)] px-5 py-3.5 bg-[var(--surface-container)]/30">
           <h4 className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <Palette size={15} className="text-[var(--primary)]" />
-            Terminal Theme
+            {t("settings.terminalTheme")}
           </h4>
           <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-            Color scheme for backgrounds, ANSI colors, and keyword highlights.
-            Applies instantly to all open terminals without reconnecting.
+            {t("settings.themeHint")}
           </p>
         </div>
 
@@ -138,15 +138,16 @@ export function TerminalThemeTab() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-container)]/40 px-4 py-3">
               <div className="text-[11px]">
                 <p className="font-semibold text-[var(--text-primary)]">
-                  Recommended font pairing
+                  {t("settings.recommendedFont")}
                 </p>
                 <p className="text-[var(--text-muted)]">
                   <span className="font-mono text-[var(--secondary)]">
                     {theme.suggestedFont.familyLabel}
                   </span>{" "}
-                  · {theme.suggestedFont.size.toFixed(1)}pt · line height{" "}
-                  {theme.suggestedFont.lineHeight.toFixed(2)} — tuned for this
-                  theme.
+                  {t("settings.fontPairingHint", {
+                    size: theme.suggestedFont.size.toFixed(1),
+                    lh: theme.suggestedFont.lineHeight.toFixed(2),
+                  })}
                 </p>
               </div>
               <button
@@ -167,7 +168,7 @@ export function TerminalThemeTab() {
                 }}
                 className="shrink-0 rounded-lg bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-3 py-1.5 text-[11px] font-semibold text-[var(--primary)] hover:bg-[var(--primary)]/25 transition-colors cursor-pointer"
               >
-                Apply pairing
+                {t("settings.applyPairing")}
               </button>
             </div>
           )}
@@ -179,19 +180,19 @@ export function TerminalThemeTab() {
         <div className="rounded-t-2xl border-b border-[var(--border)] px-5 py-3.5 bg-[var(--surface-container)]/30">
           <h4 className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <Type size={15} className="text-[var(--secondary)]" />
-            Font &amp; Text Size
+            {t("settings.fontTextSize")}
           </h4>
           <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-            Applies to every terminal. Per-session zoom (Ctrl + / - / 0) still works on top.
+            {t("settings.fontHint")}
           </p>
         </div>
 
         <div className="divide-y divide-[var(--border)] text-xs">
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <p className="font-semibold text-[var(--text-primary)]">Font family</p>
+              <p className="font-semibold text-[var(--text-primary)]">{t("settings.fontFamily")}</p>
               <p className="text-[11px] text-[var(--text-muted)]">
-                Bundled fonts (JetBrains Mono &amp; Fira Code) work 100% offline.
+                {t("settings.fontFamilyHint")}
               </p>
             </div>
             <div className="w-64 shrink-0">
@@ -209,12 +210,12 @@ export function TerminalThemeTab() {
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="font-semibold text-[var(--text-primary)]">
-                Font size{" "}
+                {t("settings.fontSize")}{" "}
                 <span className="font-mono text-[var(--primary)]">
                   {font.fontSize.toFixed(1)}pt
                 </span>
               </p>
-              <p className="text-[11px] text-[var(--text-muted)]">Range 9 – 24 pt.</p>
+              <p className="text-[11px] text-[var(--text-muted)]">{t("settings.fontSizeRange")}</p>
             </div>
             <input
               type="range"
@@ -230,12 +231,12 @@ export function TerminalThemeTab() {
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="font-semibold text-[var(--text-primary)]">
-                Line height{" "}
+                {t("settings.lineHeight")}{" "}
                 <span className="font-mono text-[var(--primary)]">
                   {font.lineHeight.toFixed(2)}
                 </span>
               </p>
-              <p className="text-[11px] text-[var(--text-muted)]">Range 1.00 – 1.80.</p>
+              <p className="text-[11px] text-[var(--text-muted)]">{t("settings.lineHeightRange")}</p>
             </div>
             <input
               type="range"
@@ -250,9 +251,9 @@ export function TerminalThemeTab() {
 
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <p className="font-semibold text-[var(--text-primary)]">Cursor</p>
+              <p className="font-semibold text-[var(--text-primary)]">{t("settings.cursor")}</p>
               <p className="text-[11px] text-[var(--text-muted)]">
-                Shape and blink behavior.
+                {t("settings.cursorHint")}
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -263,18 +264,18 @@ export function TerminalThemeTab() {
                     setFont({ cursorStyle: v as TerminalCursorStyle })
                   }
                   options={[
-                    { value: "bar", label: "Bar" },
-                    { value: "block", label: "Block" },
-                    { value: "underline", label: "Underline" },
+                    { value: "bar", label: t("settings.cursorBar") },
+                    { value: "block", label: t("settings.cursorBlock") },
+                    { value: "underline", label: t("settings.cursorUnderline") },
                   ]}
                 />
               </div>
               <Toggle
                 checked={font.cursorBlink}
                 onChange={(v) => setFont({ cursorBlink: v })}
-                label="Cursor blink"
+                label={t("settings.cursorBlink")}
               />
-              <span className="text-[11px] text-[var(--text-muted)]">Blink</span>
+              <span className="text-[11px] text-[var(--text-muted)]">{t("settings.blink")}</span>
             </div>
           </div>
         </div>
@@ -285,10 +286,10 @@ export function TerminalThemeTab() {
         <div className="rounded-t-2xl border-b border-[var(--border)] px-5 py-3.5 bg-[var(--surface-container)]/30">
           <h4 className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <Highlighter size={15} className="text-[var(--tertiary)]" />
-            Keyword Highlighting
+            {t("settings.keywordHighlighting")}
           </h4>
           <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-            Overlay colors only — copy/paste stays clean and htop/vim are unaffected.
+            {t("settings.highlightingHint")}
           </p>
         </div>
 
@@ -319,7 +320,7 @@ export function TerminalThemeTab() {
                 <Toggle
                   checked={highlight[key]}
                   onChange={(v) => setHighlight(key, v)}
-                  label={`Toggle ${HIGHLIGHT_LABELS[key]}`}
+                  label={t("settings.toggleHighlight", { label: HIGHLIGHT_LABELS[key] })}
                 />
               </div>
             );
@@ -335,7 +336,7 @@ export function TerminalThemeTab() {
           className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-low)] px-3.5 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-container)] transition-colors cursor-pointer"
         >
           <RotateCcw size={13} />
-          Reset to defaults
+          {t("settings.resetDefaults")}
         </button>
       </div>
     </div>

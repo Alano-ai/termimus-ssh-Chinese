@@ -8,6 +8,7 @@ import { findPaneById, getAllLeafPanes } from "../../lib/layoutTree";
 import { PaneContainer } from "./PaneContainer";
 import { PaneView } from "./PaneView";
 import { SnippetSidebar } from "../snippets/SnippetSidebar";
+import { t } from "../../i18n";
 
 interface TerminalWorkspaceProps {
   visible: boolean;
@@ -117,7 +118,7 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
     });
 
     useWorkspaceStore.getState().openCreateModal({
-      name: `Active Cluster (${leaves.length} Nodes)`,
+      name: t("term.activeCluster", { count: leaves.length }),
       layout: layoutType,
       nodes: capturedNodes,
       broadcastOnLaunch: broadcastGroupIds.includes(group.id),
@@ -141,9 +142,9 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
               <TerminalIcon size={22} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-[var(--text-primary)]">No Active Terminal Sessions</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{t("term.noActiveSessions")}</p>
               <p className="text-xs text-[var(--text-muted)] mt-1">
-                Select a host to connect or launch a multi-server Workspace Preset
+                {t("term.noSessionsHint")}
               </p>
             </div>
             {onOpenWorkspaces && (
@@ -152,7 +153,7 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
                 className="mt-1 flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-3.5 py-2 text-xs font-semibold text-black hover:bg-[var(--primary)]/90 transition-all shadow-sm active:scale-95"
               >
                 <Layers size={13} />
-                <span>Open Workspaces</span>
+                <span>{t("term.openWorkspaces")}</span>
               </button>
             )}
           </div>
@@ -185,14 +186,14 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
                   <div className="relative flex h-full w-full flex-col overflow-hidden">
                     <div className="flex items-center justify-between bg-[var(--surface-container)] px-3 py-1 text-xs text-[var(--primary)] border-b border-[var(--primary)]/30">
                       <span className="font-mono text-[11px] font-medium">
-                        Pane Maximized — Press ESC or click Restore to exit
+                        {t("term.paneMaximized")}
                       </span>
                       <button
                         onClick={() => toggleMaximizePane(groupMaximizedPane.id)}
                         className="flex items-center gap-1 rounded bg-[var(--primary)]/15 px-2 py-0.5 text-xs text-[var(--primary)] hover:bg-[var(--primary)]/25 transition-colors"
                       >
                         <Minimize2 size={12} />
-                        <span>Restore Split</span>
+                        <span>{t("term.restoreSplit")}</span>
                       </button>
                     </div>
                     <div className="flex-1 overflow-hidden">
@@ -206,19 +207,19 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
                       <div className="flex shrink-0 items-center justify-between bg-[var(--primary)]/10 px-3 py-1 text-xs text-[var(--primary)] border-b border-[var(--primary)]/30 backdrop-blur-sm z-20">
                         <div className="flex items-center gap-2 font-mono text-[11px]">
                           <Radio size={12} className="animate-pulse text-[var(--primary)] shrink-0" />
-                          <span className="font-semibold uppercase tracking-wider">Interconnection Active:</span>
+                          <span className="font-semibold uppercase tracking-wider">{t("term.interconnectionActive")}</span>
                           <span className="text-[var(--text-secondary)]">
-                            Keystrokes are mirrored to {connectedLeafCount || groupLeaves.length} split terminals
+                            {t("term.keystrokesMirrored", { count: connectedLeafCount || groupLeaves.length })}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleSaveGroupSplit(group)}
                             className="flex items-center gap-1 rounded bg-[var(--surface-container)] px-2 py-0.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition-colors"
-                            title="Save this split screen as a Workspace Preset"
+                            title={t("term.savePresetTitle")}
                           >
                             <BookmarkPlus size={11} />
-                            <span>Save Preset</span>
+                            <span>{t("term.savePreset")}</span>
                           </button>
                           <span className="text-[10px] text-[var(--text-muted)] font-mono hidden md:inline">
                             Alt+B
@@ -228,7 +229,7 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
                             className="flex items-center gap-1 rounded bg-[var(--primary)]/20 px-2 py-0.5 text-xs text-[var(--primary)] hover:bg-[var(--primary)] hover:text-black font-medium transition-colors"
                           >
                             <Unlink size={11} />
-                            <span>Disconnect</span>
+                            <span>{t("term.disconnect")}</span>
                           </button>
                         </div>
                       </div>
@@ -258,7 +259,7 @@ export function TerminalWorkspace({ visible, onOpenWorkspaces }: TerminalWorkspa
         >
           <TerminalIcon size={13} className="text-[var(--primary)]" />
           <span className="truncate max-w-[140px]">{draggedTab.hostLabel}</span>
-          <span className="text-[10px] text-[var(--text-muted)]">(Drag to split)</span>
+          <span className="text-[10px] text-[var(--text-muted)]">{t("term.dragToSplit")}</span>
         </div>
       )}
     </div>

@@ -11,6 +11,7 @@ import {
 import { open } from "@tauri-apps/plugin-dialog";
 import { useKeychainStore } from "../../stores/useKeychainStore";
 import { api, KeychainKeyInput } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function KeyModal() {
   const { isKeyModalOpen, editingKey, closeKeyModal, saveKey } =
@@ -128,16 +129,14 @@ export function KeyModal() {
       const selected = await open({
         multiple: false,
         directory: false,
-        title: "Select SSH Private Key",
+        title: t("keychain.selectPrivateKey"),
         defaultPath,
       });
 
       if (!selected || typeof selected !== "string") return;
 
       if (selected.endsWith(".pub")) {
-        setError(
-          "The selected file is a Public Key (.pub). Please choose your Private Key (e.g. id_rsa or id_ed25519 without the .pub extension)."
-        );
+        setError(t("keychain.selectedIsPub"));
         return;
       }
 
@@ -150,9 +149,7 @@ export function KeyModal() {
         trimmed.startsWith("sk-") ||
         trimmed.includes("PUBLIC KEY")
       ) {
-        setError(
-          "The selected file is a Public Key. SSH authentication requires the Private Key (starts with '-----BEGIN ... PRIVATE KEY-----')."
-        );
+        setError(t("keychain.selectedIsPublicKey"));
         return;
       }
 
@@ -160,9 +157,7 @@ export function KeyModal() {
         !trimmed.includes("PRIVATE KEY") &&
         !trimmed.includes("PuTTY-User-Key-File")
       ) {
-        setError(
-          "The selected file doesn't look like a private key. Please choose a file that starts with '-----BEGIN ... PRIVATE KEY-----' (e.g. id_rsa or id_ed25519 without the .pub extension)."
-        );
+        setError(t("keychain.notPrivateKey"));
         return;
       }
 
@@ -176,7 +171,7 @@ export function KeyModal() {
         setName(fileName);
       }
     } catch (err) {
-      setError(`Failed to read key file: ${err}`);
+      setError(t("keychain.readKeyFailed", { error: String(err) }));
     }
   }
 
@@ -187,7 +182,7 @@ export function KeyModal() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      setError(`Failed to copy: ${err}`);
+      setError(t("keychain.copyFailed", { error: String(err) }));
     }
   }
 
@@ -196,12 +191,12 @@ export function KeyModal() {
     setError(null);
 
     if (!name.trim()) {
-      setError("Key name is required");
+      setError(t("keychain.keyNameRequired"));
       return;
     }
 
     if (!editingKey && !privateKeyPem.trim()) {
-      setError("Private key is required");
+      setError(t("keychain.privateKeyRequired"));
       return;
     }
 
@@ -211,9 +206,7 @@ export function KeyModal() {
         privateKeyPem.trim().startsWith("ecdsa-") ||
         privateKeyPem.trim().startsWith("sk-"))
     ) {
-      setError(
-        "This looks like a Public Key (starts with ssh-rsa/ssh-ed25519). Please paste or import the matching Private Key instead — the one starting with '-----BEGIN ... PRIVATE KEY-----'."
-      );
+      setError(t("keychain.looksLikePublicKey"));
       return;
     }
 
@@ -243,7 +236,7 @@ export function KeyModal() {
       <div className="w-full max-w-lg rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="mb-4 flex items-center justify-between border-b border-[var(--border)] pb-3">
           <h2 className="text-base font-semibold text-[var(--text-primary)]">
-            {editingKey ? "Edit SSH Key" : "New SSH Key"}
+            {editingKey ? t("keychain.editKey") : t("keychain.newKey")}
           </h2>
           <button
             onClick={closeKeyModal}
@@ -263,26 +256,26 @@ export function KeyModal() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="mb-1 block font-medium text-[var(--text-muted)]">
-                Key Label / Name *
+                {t("keychain.keyLabel")}
               </label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. deploy-key, staging-server, production-key"
+                placeholder={t("keychain.keyPlaceholder")}
                 className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
               />
             </div>
             <div>
               <label className="mb-1 block font-medium text-[var(--text-muted)]">
-                Default Username (optional)
+                {t("keychain.defaultUsername")}
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="e.g. root, ubuntu"
+                placeholder={t("keychain.usernamePlaceholder")}
                 className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
               />
             </div>
@@ -292,17 +285,17 @@ export function KeyModal() {
             <div className="mb-1.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <label className="font-medium text-[var(--text-muted)]">
-                  Private Key (OpenSSH/RSA PEM)
+                  {t("keychain.privateKey")}
                 </label>
                 {editingKey && privateKeyPem && (
                   <button
                     type="button"
                     onClick={() => setShowPrivateKey(!showPrivateKey)}
                     className="flex items-center gap-1 rounded bg-[var(--surface-high)] px-2 py-0.5 text-[11px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-highest)] border border-[var(--border)] transition-colors"
-                    title={showPrivateKey ? "Hide private key" : "Reveal private key"}
+                    title={showPrivateKey ? t("keychain.hidePrivateKey") : t("keychain.revealPrivateKey")}
                   >
                     {showPrivateKey ? <EyeOff size={11} /> : <Eye size={11} />}
-                    <span>{showPrivateKey ? "Hide" : "Reveal"}</span>
+                    <span>{showPrivateKey ? t("keychain.hide") : t("keychain.reveal")}</span>
                   </button>
                 )}
               </div>
@@ -320,19 +313,19 @@ export function KeyModal() {
                         ? "bg-[var(--success)] text-black font-semibold"
                         : "bg-[var(--surface-high)] text-[var(--text-primary)] hover:bg-[var(--surface-highest)] border border-[var(--border)]"
                     }`}
-                    title="Copy private key"
+                    title={t("keychain.copyPrivateKey")}
                   >
                     {copiedPrivateKey ? <Check size={11} /> : <Copy size={11} />}
-                    <span>{copiedPrivateKey ? "Copied" : "Copy"}</span>
+                    <span>{copiedPrivateKey ? t("common.copied") : t("common.copy")}</span>
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={handleImportKeyFile}
                   className="flex items-center gap-1 rounded bg-[var(--surface-high)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-highest)] border border-[var(--border)] transition"
-                  title="Import private key from local file"
+                  title={t("keychain.importPrivateKey")}
                 >
-                  <Upload size={11} /> Import File
+                  <Upload size={11} /> {t("keychain.importFile")}
                 </button>
               </div>
             </div>
@@ -350,9 +343,7 @@ export function KeyModal() {
                 const file = e.dataTransfer.files?.[0];
                 if (file) {
                   if (file.name.endsWith(".pub")) {
-                    setError(
-                      "The dropped file is a Public Key (.pub). Please drop your Private Key."
-                    );
+                    setError(t("keychain.droppedIsPub"));
                     return;
                   }
                   const text = await file.text();
@@ -363,9 +354,7 @@ export function KeyModal() {
                     trimmed.startsWith("sk-") ||
                     trimmed.includes("PUBLIC KEY")
                   ) {
-                    setError(
-                      "The dropped file is an SSH Public Key. SSH authentication requires the Private Key."
-                    );
+                    setError(t("keychain.droppedIsPublicKey"));
                     return;
                   }
                   setPrivateKeyPem(text);
@@ -377,8 +366,8 @@ export function KeyModal() {
               }}
               placeholder={
                 loadingKey
-                  ? "Decrypting and loading private key from vault..."
-                  : "-----BEGIN OPENSSH PRIVATE KEY----- ... (paste private key or click 'Import File')"
+                  ? t("keychain.decryptingKey")
+                  : t("keychain.privateKeyPlaceholder")
               }
               className={`w-full font-mono rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none transition-all ${
                 editingKey && !showPrivateKey && privateKeyPem
@@ -390,14 +379,14 @@ export function KeyModal() {
 
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Passphrase (if key is encrypted)
+              {t("keychain.passphraseLabel")}
             </label>
             <div className="relative">
               <input
                 type={showPassphrase ? "text" : "password"}
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
-                placeholder="Key passphrase..."
+                placeholder={t("keychain.passphrasePlaceholder")}
                 className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-9 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
               />
               {passphrase && (
@@ -405,7 +394,7 @@ export function KeyModal() {
                   type="button"
                   onClick={() => setShowPassphrase(!showPassphrase)}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-                  title={showPassphrase ? "Hide passphrase" : "Show passphrase"}
+                  title={showPassphrase ? t("keychain.hidePassphrase") : t("keychain.showPassphrase")}
                 >
                   {showPassphrase ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
@@ -420,7 +409,7 @@ export function KeyModal() {
                 <div className="flex items-center gap-1.5">
                   <Key size={13} className="text-[var(--primary)]" />
                   <span className="font-semibold text-xs text-[var(--text-primary)]">
-                    Public Key (OpenSSH)
+                    {t("keychain.publicKey")}
                   </span>
                 </div>
                 <button
@@ -434,11 +423,11 @@ export function KeyModal() {
                 >
                   {copied ? (
                     <>
-                      <Check size={12} /> Copied!
+                      <Check size={12} /> {t("common.copied")}
                     </>
                   ) : (
                     <>
-                      <Copy size={12} /> Copy Public Key
+                      <Copy size={12} /> {t("hosts.copyPublicKey")}
                     </>
                   )}
                 </button>
@@ -447,11 +436,11 @@ export function KeyModal() {
                 {publicKey}
               </div>
               <p className="text-[11px] text-[var(--text-muted)]">
-                Place this public key in the server's{" "}
+                {t("keychain.authorizedKeysHintPrefix")}{" "}
                 <code className="rounded bg-[var(--surface-high)] px-1 py-0.5 text-[var(--text-primary)]">
                   ~/.ssh/authorized_keys
                 </code>{" "}
-                to allow authentication.
+                {t("keychain.authorizedKeysHintSuffix")}
               </p>
             </div>
           )}
@@ -462,14 +451,14 @@ export function KeyModal() {
               onClick={closeKeyModal}
               className="rounded-md px-4 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
             >
-              {submitting ? "Saving..." : editingKey ? "Update Key" : "Save Key to Keychain"}
+              {submitting ? t("common.saving") : editingKey ? t("keychain.updateKey") : t("keychain.saveKey")}
             </button>
           </div>
         </form>

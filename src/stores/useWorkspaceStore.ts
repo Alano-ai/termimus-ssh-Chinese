@@ -6,6 +6,7 @@ import {
   WorkspacePreset,
   WorkspacePresetInput,
 } from "../lib/api";
+import { t } from "../i18n";
 
 export type { PresetLayoutType, PresetNode, WorkspacePreset, WorkspacePresetInput };
 
@@ -33,39 +34,39 @@ export function getLayoutMeta(layout: PresetLayoutType): {
   switch (layout) {
     case "split-vertical":
       return {
-        label: "Side by Side (1×2)",
+        label: t("workspaces.layoutSideBySide"),
         panes: 2,
-        description: "Two terminals split vertically left and right",
+        description: t("workspaces.descSideBySide"),
       };
     case "split-horizontal":
       return {
-        label: "Top & Bottom (2×1)",
+        label: t("workspaces.layoutTopBottom"),
         panes: 2,
-        description: "Two terminals split horizontally top and bottom",
+        description: t("workspaces.descTopBottom"),
       };
     case "grid-4":
       return {
-        label: "2×2 Quad Grid (4)",
+        label: t("workspaces.layoutQuad"),
         panes: 4,
-        description: "Four balanced terminal panes in a 2x2 grid",
+        description: t("workspaces.descQuad"),
       };
     case "split-1-2":
       return {
-        label: "1 Large + 2 Stacked",
+        label: t("workspaces.layout1Left2Right"),
         panes: 3,
-        description: "One primary terminal on left, two stacked on right",
+        description: t("workspaces.desc1Left2Right"),
       };
     case "split-2-1":
       return {
-        label: "2 Stacked + 1 Wide",
+        label: t("workspaces.layout2Top1Bottom"),
         panes: 3,
-        description: "Two terminals side-by-side on top, one wide on bottom",
+        description: t("workspaces.desc2Top1Bottom"),
       };
     case "triple-column":
       return {
-        label: "Triple Column (1×3)",
+        label: t("workspaces.layoutTripleColumn"),
         panes: 3,
-        description: "Three parallel vertical columns side-by-side",
+        description: t("workspaces.descTripleColumn"),
       };
   }
 }

@@ -17,6 +17,7 @@ import { Host } from "../../lib/api";
 import { useHostStore } from "../../stores/useHostStore";
 import { useSessionStore } from "../../stores/useSessionStore";
 import { useShallow } from "zustand/react/shallow";
+import { t } from "../../i18n";
 
 export interface ConnectionLog {
   timestamp: string;
@@ -71,7 +72,7 @@ export function ConnectionProgress({
       )
       .join("\n");
     try {
-      await navigator.clipboard.writeText(text || error || "No logs available");
+      await navigator.clipboard.writeText(text || error || t("term.noLogsAvailable"));
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -104,10 +105,10 @@ export function ConnectionProgress({
   }, [currentStep, isFailed]);
 
   const stages = [
-    { step: 1, label: "Socket", icon: Plug },
-    { step: 2, label: "Host Key", icon: ShieldCheck },
-    { step: 3, label: "Auth", icon: KeyRound },
-    { step: 4, label: "Shell", icon: TerminalIcon },
+    { step: 1, label: t("term.stageSocket"), icon: Plug },
+    { step: 2, label: t("term.stageHostKey"), icon: ShieldCheck },
+    { step: 3, label: t("term.stageAuth"), icon: KeyRound },
+    { step: 4, label: t("term.stageShell"), icon: TerminalIcon },
   ];
 
   return (
@@ -142,10 +143,10 @@ export function ConnectionProgress({
             {/* Host Name & Address */}
             <div className="min-w-0">
               <h2 className="truncate text-base font-semibold text-white">
-                {host?.label || "Remote Server"}
+                {host?.label || t("term.remoteServer")}
               </h2>
               <p className="truncate font-mono text-xs text-[var(--text-muted)]">
-                SSH {host?.address || "server"}:{host?.port || 22}
+                SSH {host?.address || t("term.server")}:{host?.port || 22}
               </p>
             </div>
           </div>
@@ -156,7 +157,7 @@ export function ConnectionProgress({
             onClick={() => setShowLogs((prev) => !prev)}
             className="rounded-xl border border-[var(--border)] bg-[#21262d] px-3.5 py-1.5 text-xs font-medium text-white transition hover:bg-[#30363d] shadow-sm cursor-pointer"
           >
-            {showLogs || isFailed ? "Hide logs" : "Show logs"}
+            {showLogs || isFailed ? t("term.hideLogs") : t("term.showLogs")}
           </button>
         </div>
 
@@ -243,7 +244,7 @@ export function ConnectionProgress({
               ? error
               : logs.length > 0
               ? logs[logs.length - 1].message
-              : `Connecting to ${host?.address || "server"}...`}
+              : t("term.connectingTo", { address: host?.address || t("term.server") })}
           </p>
         </div>
 
@@ -252,7 +253,7 @@ export function ConnectionProgress({
           <div className="space-y-3 pt-1">
             <div className="flex items-center justify-between px-1">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-                Connection Log
+                {t("term.connectionLog")}
               </span>
               <button
                 onClick={handleCopyLog}
@@ -260,11 +261,11 @@ export function ConnectionProgress({
               >
                 {copied ? (
                   <>
-                    <Check size={11} className="text-[var(--success)]" /> Copied
+                    <Check size={11} className="text-[var(--success)]" /> {t("common.copied")}
                   </>
                 ) : (
                   <>
-                    <Copy size={11} /> Copy Log
+                    <Copy size={11} /> {t("term.copyLog")}
                   </>
                 )}
               </button>
@@ -272,7 +273,7 @@ export function ConnectionProgress({
 
             <div className="max-h-48 overflow-y-auto rounded-xl border border-[var(--border)] bg-[#05070a] p-3 font-mono text-[11px] leading-relaxed shadow-inner">
               {logs.length === 0 ? (
-                <p className="text-[var(--text-muted)]">No logs yet...</p>
+                <p className="text-[var(--text-muted)]">{t("term.noLogsYet")}</p>
               ) : (
                 logs.map((log, idx) => (
                   <div
@@ -309,7 +310,7 @@ export function ConnectionProgress({
               onClick={onRetry}
               className="flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-4 py-2 text-xs font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] shadow-md"
             >
-              <RotateCw size={13} /> Retry
+              <RotateCw size={13} /> {t("common.retry")}
             </button>
 
             {host && (
@@ -317,7 +318,7 @@ export function ConnectionProgress({
                 onClick={() => openEditModal(host)}
                 className="flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[#21262d] px-4 py-2 text-xs font-medium text-white transition hover:bg-[#30363d]"
               >
-                <Pencil size={13} /> Edit Host
+                <Pencil size={13} /> {t("hosts.editHost")}
               </button>
             )}
 
@@ -328,7 +329,7 @@ export function ConnectionProgress({
               }}
               className="flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[#21262d] px-3.5 py-2 text-xs font-medium text-[var(--text-muted)] transition hover:text-white"
             >
-              <X size={13} /> Close
+              <X size={13} /> {t("common.close")}
             </button>
           </div>
         )}

@@ -18,6 +18,7 @@ import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
 import { useUpdateStore } from "../../stores/useUpdateStore";
 import { openExternalUrl } from "../../lib/openUrl";
 import kofiIcon from "../../assets/kofi.png";
+import { t } from "../../i18n";
 
 export type ActiveTab = "hosts" | "workspaces" | "terminal" | "sftp" | "keychain" | "tunnels" | "snippets" | "settings";
 
@@ -42,12 +43,12 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
     badge?: string | number;
     badgeDot?: boolean;
   }[] = [
-    { icon: Server, label: "Hosts", id: "hosts", badge: hosts.length || undefined },
-    { icon: KeyRound, label: "Keychain", id: "keychain", badge: keychainItems.length || undefined },
-    { icon: Layers, label: "Workspaces", id: "workspaces", badge: presets.length || undefined },
-    { icon: FolderOpen, label: "SFTP Browser", id: "sftp" },
-    { icon: Braces, label: "Snippets & Scripts", id: "snippets", badge: snippets.length || undefined },
-    { icon: Waypoints, label: "Port Forwarding", id: "tunnels", badgeDot: activeRuleIds.size > 0 },
+    { icon: Server, label: t("nav.hosts"), id: "hosts", badge: hosts.length || undefined },
+    { icon: KeyRound, label: t("nav.keychain"), id: "keychain", badge: keychainItems.length || undefined },
+    { icon: Layers, label: t("nav.workspaces"), id: "workspaces", badge: presets.length || undefined },
+    { icon: FolderOpen, label: t("nav.sftp"), id: "sftp" },
+    { icon: Braces, label: t("nav.snippets"), id: "snippets", badge: snippets.length || undefined },
+    { icon: Waypoints, label: t("nav.tunnels"), id: "tunnels", badgeDot: activeRuleIds.size > 0 },
   ];
 
   return (
@@ -129,11 +130,11 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
               />
             </div>
             <span className="flex-1 text-left truncate text-[13px] font-medium">
-              Settings
+              {t("nav.settings")}
             </span>
             {hasUpdate && (
               <span className="mr-2 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-[var(--primary)] border border-[var(--primary)]/30 animate-pulse">
-                Update
+                {t("nav.update")}
               </span>
             )}
           </button>
@@ -153,7 +154,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
                 )}
               </div>
               <span className="ml-2 text-[11px] font-semibold text-[var(--text-primary)] truncate">
-                {isUnlocked ? "Vault Unlocked" : "Vault Locked"}
+                {isUnlocked ? t("vault.unlocked") : t("vault.locked")}
               </span>
             </div>
           </div>
@@ -164,21 +165,21 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
               <button
                 type="button"
                 onClick={() => openExternalUrl(releaseUrl)}
-                title={`Update available: v${latestVersion}. Click to open release page.`}
+                title={t("update.availableTitle", { version: latestVersion })}
                 className="group/upd flex items-center gap-1 font-mono text-[10px] text-[var(--primary)] hover:underline cursor-pointer font-semibold transition-colors"
               >
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary)] opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--primary)]" />
                 </span>
-                <span>Update v{latestVersion}</span>
+                <span>{t("update.version", { version: latestVersion })}</span>
                 <ArrowUpCircle size={10} className="shrink-0 group-hover/upd:translate-y-[-1px] transition-transform" />
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => onNavChange("settings")}
-                title={`Termimus v${currentVersion} (Click to open Settings & About)`}
+                title={t("update.versionTitle", { version: currentVersion })}
                 className="font-mono text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer select-none"
               >
                 v{currentVersion}
@@ -189,7 +190,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
             <button
               type="button"
               onClick={() => openExternalUrl("https://ko-fi.com/termimus")}
-              title="Support Termimus on Ko-fi"
+              title={t("support.kofiTitle")}
               className="group/kofi inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-container)] transition-colors cursor-pointer"
             >
               <img
@@ -197,7 +198,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
                 alt="Ko-fi"
                 className="w-3.5 h-auto object-contain transition-transform group-hover/kofi:scale-110 drop-shadow-xs"
               />
-              <span className="font-medium">Support</span>
+              <span className="font-medium">{t("support.label")}</span>
             </button>
           </div>
         </div>

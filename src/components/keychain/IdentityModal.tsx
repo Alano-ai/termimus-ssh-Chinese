@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, UserCheck } from "lucide-react";
 import { useKeychainStore } from "../../stores/useKeychainStore";
 import { KeychainIdentityInput } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function IdentityModal() {
   const {
@@ -37,12 +38,12 @@ export function IdentityModal() {
     setError(null);
 
     if (!name.trim()) {
-      setError("Identity name is required");
+      setError(t("keychain.identityNameRequired"));
       return;
     }
 
     if (!editingIdentity && !password.trim()) {
-      setError("Password is required");
+      setError(t("keychain.passwordRequired"));
       return;
     }
 
@@ -70,7 +71,7 @@ export function IdentityModal() {
           <div className="flex items-center gap-2">
             <UserCheck size={18} className="text-[var(--primary)]" />
             <h2 className="text-base font-semibold text-[var(--text-primary)]">
-              {editingIdentity ? "Edit Identity" : "New Identity"}
+              {editingIdentity ? t("keychain.editIdentity") : t("keychain.newIdentity")}
             </h2>
           </div>
           <button
@@ -90,40 +91,40 @@ export function IdentityModal() {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Identity Label / Name *
+              {t("keychain.identityLabel")}
             </label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. admin-login, database-user, production-root"
+              placeholder={t("keychain.identityPlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
             />
           </div>
 
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Username
+              {t("common.username")}
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. root, admin, ubuntu"
+              placeholder={t("keychain.usernamePlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
             />
           </div>
 
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Password {editingIdentity && "(leave blank to keep unchanged)"}
+              {t("keychain.passwordLabel")} {editingIdentity && t("keychain.leaveBlank")}
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password..."
+              placeholder={t("keychain.passwordPlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
             />
           </div>
@@ -134,7 +135,7 @@ export function IdentityModal() {
               onClick={closeIdentityModal}
               className="rounded-md px-4 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
@@ -142,10 +143,10 @@ export function IdentityModal() {
               className="rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
             >
               {submitting
-                ? "Saving..."
+                ? t("common.saving")
                 : editingIdentity
-                ? "Update Identity"
-                : "Save Identity"}
+                ? t("keychain.updateIdentity")
+                : t("keychain.saveIdentity")}
             </button>
           </div>
         </form>

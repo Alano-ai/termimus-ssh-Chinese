@@ -12,7 +12,7 @@ let cachedDateFormatter: Intl.DateTimeFormat | null = null;
 
 function getDateFormatter(): Intl.DateTimeFormat {
   if (!cachedDateFormatter) {
-    cachedDateFormatter = new Intl.DateTimeFormat(undefined, {
+    cachedDateFormatter = new Intl.DateTimeFormat("zh-CN", {
       year: "numeric",
       month: "short",
       day: "numeric",

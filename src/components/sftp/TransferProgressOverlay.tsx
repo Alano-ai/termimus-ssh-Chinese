@@ -1,6 +1,7 @@
 import { Loader2, X } from "lucide-react";
 import { useSftpStore } from "../../stores/useSftpStore";
 import { formatBytes } from "../../lib/format";
+import { t } from "../../i18n";
 
 /**
  * Floating transfer indicator pinned to the top-right of the SFTP view.
@@ -26,14 +27,14 @@ export function TransferProgressOverlay() {
       <div className="flex items-center gap-2">
         <Loader2 size={14} className="shrink-0 animate-spin text-[var(--accent)]" />
         <span className="text-xs font-semibold text-[var(--text-primary)]">
-          {scanning ? "Preparing transfer..." : `Transfer ${percent}%`}
+          {scanning ? t("sftp.preparingTransfer") : t("sftp.transferPercent", { percent })}
         </span>
         <button
           onClick={cancelTransfer}
-          title="Cancel transfer"
+          title={t("sftp.cancelTransfer")}
           className="ml-auto flex shrink-0 items-center gap-1 rounded bg-[var(--border)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:text-white"
         >
-          <X size={10} /> Cancel
+          <X size={10} /> {t("common.cancel")}
         </button>
       </div>
 
@@ -55,7 +56,7 @@ export function TransferProgressOverlay() {
         </span>
         {progress && progress.total > 0 && (
           <span>
-            {progress.done}/{progress.total} files
+            {t("sftp.filesCount", { done: progress.done, total: progress.total })}
           </span>
         )}
       </div>

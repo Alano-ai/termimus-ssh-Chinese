@@ -31,6 +31,7 @@ import { FolderModal } from "./FolderModal";
 import { Host, Folder } from "../../lib/api";
 import { DistroBadge } from "./DistroBadge";
 import { HostListRow } from "./HostListRow";
+import { t } from "../../i18n";
 
 // Ping interval: 60s is gentle on router & network, battery-friendly on laptops
 const PING_INTERVAL_MS = 60000;
@@ -94,7 +95,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
     setViewMode(mode);
     try {
       localStorage.setItem("termimus_hosts_view_mode", mode);
-    } catch {}
+    } catch { /* ignore localStorage errors */ }
   }, []);
 
   const [selectedTag, setSelectedTag] = useState<string>("All");
@@ -291,9 +292,9 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
     (e: React.MouseEvent, host: Host) => {
       e.stopPropagation();
       useConfirmStore.getState().confirm({
-        title: "Delete Host",
-        message: `Are you sure you want to delete "${host.label}" (${host.username}@${host.address})? This action cannot be undone.`,
-        confirmLabel: "Delete Host",
+        title: t("hosts.deleteHostTitle"),
+        message: t("hosts.deleteHostMessage", { label: host.label, user: host.username, address: host.address }),
+        confirmLabel: t("hosts.deleteHostTitle"),
         isDanger: true,
         onConfirm: async () => {
           await deleteHost(host.id);
@@ -307,9 +308,9 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
     (e: React.MouseEvent, folder: Folder) => {
       e.stopPropagation();
       useConfirmStore.getState().confirm({
-        title: "Delete Group",
-        message: `Are you sure you want to delete the group "${folder.name}"? Hosts inside this group will not be deleted and will move to ungrouped.`,
-        confirmLabel: "Delete Group",
+        title: t("hosts.deleteGroupTitle"),
+        message: t("hosts.deleteGroupMessage", { name: folder.name }),
+        confirmLabel: t("hosts.deleteGroupTitle"),
         isDanger: true,
         onConfirm: async () => {
           await deleteFolder(folder.id);
@@ -347,7 +348,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search host, IP, label, tag..."
+                placeholder={t("hosts.searchPlaceholder")}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-container)] py-2 pl-9 pr-3 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] focus:outline-none transition-colors"
               />
             </div>
@@ -364,7 +365,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                       : "bg-[var(--surface-container)] text-[var(--text-secondary)] hover:text-white"
                   }`}
                 >
-                  All
+                  {t("common.all")}
                 </button>
                 {allTags.map((tag) => (
                   <button
@@ -391,7 +392,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               <button
                 type="button"
                 onClick={() => handleToggleView("grid")}
-                title="Grid Cards View"
+                title={t("hosts.gridView")}
                 className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-[var(--surface-high)] text-[var(--primary)] font-semibold shadow-xs"
@@ -403,7 +404,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               <button
                 type="button"
                 onClick={() => handleToggleView("list")}
-                title="Compact List View"
+                title={t("hosts.listView")}
                 className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors cursor-pointer ${
                   viewMode === "list"
                     ? "bg-[var(--surface-high)] text-[var(--primary)] font-semibold shadow-xs"
@@ -420,7 +421,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               className="flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-high)] px-3.5 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--surface-highest)] transition-colors shadow-sm shrink-0 cursor-pointer"
             >
               <FolderPlus size={14} />
-              <span>New Group</span>
+              <span>{t("hosts.newGroup")}</span>
             </button>
 
             <button
@@ -429,7 +430,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               className="flex items-center gap-1.5 rounded-xl bg-[var(--primary)] px-3.5 py-2 text-xs font-semibold text-[var(--on-primary)] hover:bg-[var(--primary-hover)] transition-colors shadow-sm shrink-0 cursor-pointer"
             >
               <Plus size={15} strokeWidth={2.5} />
-              <span>New Host</span>
+              <span>{t("hosts.newHost")}</span>
             </button>
           </div>
         </div>
@@ -446,7 +447,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                   : "bg-[var(--surface-container)] text-[var(--text-secondary)] hover:text-white"
               }`}
             >
-              All
+              {t("common.all")}
             </button>
             {allTags.map((tag) => (
               <button
@@ -477,7 +478,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-2.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-high)] hover:text-white transition"
               >
                 <ArrowLeft size={13} />
-                <span>All Groups</span>
+                <span>{t("hosts.allGroups")}</span>
               </button>
 
               <div className="flex items-center gap-2">
@@ -491,8 +492,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                   </h2>
                 </div>
                 <span className="rounded-md bg-[var(--surface-container)] px-2 py-0.5 text-xs font-mono text-[var(--text-muted)] border border-[var(--border)]">
-                  {hostsInActiveFolder.length}{" "}
-                  {hostsInActiveFolder.length === 1 ? "Host" : "Hosts"}
+                  {t("hosts.hostCount", { count: hostsInActiveFolder.length })}
                 </span>
               </div>
             </div>
@@ -501,16 +501,16 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               <button
                 onClick={() => openEditFolderModal(activeFolder)}
                 className="flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-2.5 py-1 text-xs text-[var(--text-secondary)] hover:text-white transition"
-                title="Rename Group"
+                title={t("hosts.renameGroup")}
               >
-                <Pencil size={12} /> Rename
+                <Pencil size={12} /> {t("hosts.rename")}
               </button>
               <button
                 onClick={(e) => handleDeleteFolder(e, activeFolder)}
                 className="flex items-center gap-1 rounded-lg border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-2.5 py-1 text-xs text-[var(--danger)] hover:bg-[var(--danger)]/20 transition"
-                title="Delete Group"
+                title={t("hosts.deleteGroupTitle")}
               >
-                <Trash2 size={12} /> Delete
+                <Trash2 size={12} /> {t("common.delete")}
               </button>
             </div>
           </div>
@@ -520,16 +520,16 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
             <div className="flex flex-col items-center justify-center py-16 text-center text-[var(--text-muted)]">
               <Server size={36} className="mb-2 opacity-30" />
               <p className="text-sm font-medium text-[var(--text-primary)]">
-                No hosts in this group yet
+                {t("hosts.noHostsInGroup")}
               </p>
               <p className="mt-1 text-xs max-w-sm">
-                When adding or editing a host, select <strong>{activeFolder.name}</strong> as its folder.
+                {t("hosts.noHostsInGroupHintPrefix")} <strong>{activeFolder.name}</strong> {t("hosts.noHostsInGroupHintSuffix")}
               </p>
               <button
                 onClick={() => openCreateModal(selectedFolderId ?? undefined)}
                 className="mt-4 rounded-xl bg-[var(--primary)] px-3.5 py-1.5 text-xs font-semibold text-[var(--on-primary)] hover:bg-[var(--primary-hover)] transition"
               >
-                Add Host Here
+                {t("hosts.addHostHere")}
               </button>
             </div>
           ) : viewMode === "grid" ? (
@@ -557,12 +557,12 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
             <div className="flex flex-col gap-1.5">
               {/* Table Column Header */}
               <div className="flex items-center gap-3.5 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] select-none">
-                <span className="w-8 shrink-0 text-center">OS</span>
-                <span className="w-48 sm:w-56 md:w-64 shrink-0">Name</span>
-                <span className="w-40 sm:w-48 md:w-52 shrink-0">Address</span>
-                <span className="hidden sm:block w-24 md:w-32 shrink-0">User</span>
-                <span className="hidden lg:block flex-1 min-w-0">Tags</span>
-                <span className="w-16 shrink-0 text-right ml-auto pr-2">Actions</span>
+                <span className="w-8 shrink-0 text-center">{t("hosts.colOs")}</span>
+                <span className="w-48 sm:w-56 md:w-64 shrink-0">{t("hosts.colName")}</span>
+                <span className="w-40 sm:w-48 md:w-52 shrink-0">{t("hosts.colAddress")}</span>
+                <span className="hidden sm:block w-24 md:w-32 shrink-0">{t("hosts.colUser")}</span>
+                <span className="hidden lg:block flex-1 min-w-0">{t("hosts.colTags")}</span>
+                <span className="w-16 shrink-0 text-right ml-auto pr-2">{t("hosts.colActions")}</span>
               </div>
 
               {hostsInActiveFolder.map((host) => (
@@ -594,10 +594,10 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
             <div>
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-                  Groups
+                  {t("hosts.groups")}
                 </h2>
                 <span className="text-[11px] font-mono text-[var(--text-muted)]">
-                  Click group to view hosts
+                  {t("hosts.clickGroupHint")}
                 </span>
               </div>
 
@@ -621,10 +621,10 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
           <div>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-                Hosts
+                {t("hosts.hosts")}
               </h2>
               <span className="text-[11px] font-mono text-[var(--text-muted)]">
-                Ordered by last opened
+                {t("hosts.orderedByLastOpened")}
               </span>
             </div>
 
@@ -632,17 +632,17 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               <div className="flex flex-col items-center justify-center py-16 text-center text-[var(--text-muted)]">
                 <Server size={36} className="mb-2 opacity-30" />
                 <p className="text-sm font-medium text-[var(--text-primary)]">
-                  {hosts.length === 0 ? "No servers configured yet" : "No hosts match your filter"}
+                  {hosts.length === 0 ? t("hosts.noServers") : t("hosts.noHostsMatch")}
                 </p>
                 <p className="mt-1 text-xs max-w-sm">
-                  Add a server to start SSH sessions, transfer files via SFTP, and forward ports.
+                  {t("hosts.addServerHint")}
                 </p>
                 {hosts.length === 0 && (
                   <button
                     onClick={() => openCreateModal()}
                     className="mt-4 rounded-xl bg-[var(--primary)] px-3.5 py-1.5 text-xs font-semibold text-[var(--on-primary)] hover:bg-[var(--primary-hover)] transition"
                   >
-                    Add Your First Host
+                    {t("hosts.addFirstHost")}
                   </button>
                 )}
               </div>
@@ -671,12 +671,12 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
               <div className="flex flex-col gap-1.5">
                 {/* Table Column Header */}
                 <div className="flex items-center gap-3.5 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] select-none">
-                  <span className="w-8 shrink-0 text-center">OS</span>
-                  <span className="w-48 sm:w-56 md:w-64 shrink-0">Name</span>
-                  <span className="w-40 sm:w-48 md:w-52 shrink-0">Address</span>
-                  <span className="hidden sm:block w-24 md:w-32 shrink-0">User</span>
-                  <span className="hidden lg:block flex-1 min-w-0">Tags</span>
-                  <span className="w-16 shrink-0 text-right ml-auto pr-2">Actions</span>
+                  <span className="w-8 shrink-0 text-center">{t("hosts.colOs")}</span>
+                  <span className="w-48 sm:w-56 md:w-64 shrink-0">{t("hosts.colName")}</span>
+                  <span className="w-40 sm:w-48 md:w-52 shrink-0">{t("hosts.colAddress")}</span>
+                  <span className="hidden sm:block w-24 md:w-32 shrink-0">{t("hosts.colUser")}</span>
+                  <span className="hidden lg:block flex-1 min-w-0">{t("hosts.colTags")}</span>
+                  <span className="w-16 shrink-0 text-right ml-auto pr-2">{t("hosts.colActions")}</span>
                 </div>
 
                 {sortedRecentHosts.map((host) => (
@@ -722,7 +722,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Terminal size={13} />
-                <span>Connect SSH</span>
+                <span>{t("hosts.connectSsh")}</span>
               </button>
 
               {/* Split Right */}
@@ -734,7 +734,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Columns2 size={13} />
-                <span>Split Right</span>
+                <span>{t("hosts.splitRight")}</span>
               </button>
 
               {/* Split Down */}
@@ -746,7 +746,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Rows2 size={13} />
-                <span>Split Down</span>
+                <span>{t("hosts.splitDown")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -760,7 +760,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <FolderOpen size={13} />
-                <span>SFTP Files</span>
+                <span>{t("hosts.sftpFiles")}</span>
               </button>
 
               {/* Port Forwarding */}
@@ -772,7 +772,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Waypoints size={13} />
-                <span>Port Forwarding</span>
+                <span>{t("hosts.portForwarding")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -786,7 +786,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <CopyPlus size={13} />
-                <span>Duplicate Host</span>
+                <span>{t("hosts.duplicateHost")}</span>
               </button>
 
               {/* Copy SSH Command */}
@@ -795,26 +795,26 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                   const port = contextMenu.host!.port || 22;
                   const cmd = `ssh -p ${port} ${contextMenu.host!.username}@${contextMenu.host!.address}`;
                   await navigator.clipboard.writeText(cmd);
-                  showCopyToast("Copied SSH command");
+                  showCopyToast(t("hosts.copiedSshCommand"));
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Copy SSH Command</span>
+                <span>{t("hosts.copySshCommand")}</span>
               </button>
 
               {/* Copy Address */}
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(contextMenu.host!.address);
-                  showCopyToast("Copied host address");
+                  showCopyToast(t("hosts.copiedAddress"));
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Copy Address</span>
+                <span>{t("hosts.copyAddress")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -828,7 +828,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Pencil size={13} />
-                <span>Edit Host</span>
+                <span>{t("hosts.editHost")}</span>
               </button>
 
               {/* Delete Host */}
@@ -840,7 +840,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--danger)] hover:text-white transition-colors group"
               >
                 <Trash2 size={13} />
-                <span>Delete Host</span>
+                <span>{t("hosts.deleteHostTitle")}</span>
               </button>
             </>
           ) : contextMenu.type === "folder" && contextMenu.folder ? (
@@ -854,7 +854,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <FolderOpen size={13} />
-                <span>Open Group</span>
+                <span>{t("hosts.openGroup")}</span>
               </button>
 
               {/* Rename Group */}
@@ -866,7 +866,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Pencil size={13} />
-                <span>Rename Group</span>
+                <span>{t("hosts.renameGroup")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -880,7 +880,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--danger)] hover:text-white transition-colors group"
               >
                 <Trash2 size={13} />
-                <span>Delete Group</span>
+                <span>{t("hosts.deleteGroupTitle")}</span>
               </button>
             </>
           ) : (
@@ -894,7 +894,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Plus size={13} />
-                <span>New Host</span>
+                <span>{t("hosts.newHost")}</span>
               </button>
 
               <button
@@ -905,7 +905,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <FolderPlus size={13} />
-                <span>New Group</span>
+                <span>{t("hosts.newGroup")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -918,7 +918,7 @@ export function HostList({ onOpenTerminal, onOpenSftp, onOpenTunnels }: HostList
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <RefreshCw size={13} />
-                <span>Ping All Hosts</span>
+                <span>{t("hosts.pingAllHosts")}</span>
               </button>
             </>
           )}
@@ -974,7 +974,7 @@ const FolderCard = memo(function FolderCard({
           {folder.name}
         </h3>
         <p className="text-xs text-[var(--text-muted)]">
-          {count} {count === 1 ? "Host" : "Hosts"}
+          {t("hosts.hostCount", { count })}
         </p>
       </div>
 
@@ -985,14 +985,14 @@ const FolderCard = memo(function FolderCard({
       >
         <button
           onClick={() => onEdit(folder)}
-          title="Rename"
+          title={t("hosts.rename")}
           className="rounded p-1 text-[var(--text-muted)] hover:text-white hover:bg-[var(--surface-high)]"
         >
           <Pencil size={11} />
         </button>
         <button
           onClick={(e) => onDelete(e, folder)}
-          title="Delete"
+          title={t("common.delete")}
           className="rounded p-1 text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/20"
         >
           <Trash2 size={11} />
@@ -1052,14 +1052,14 @@ const HostCard = memo(function HostCard({
           {isConnecting ? (
             <span
               className="absolute top-1.5 left-1.5 z-10 flex h-2 w-2 items-center justify-center rounded-full bg-[var(--primary)]"
-              title="Connecting..."
+              title={t("common.connecting")}
             >
               <span className="h-1 w-1 rounded-full bg-black animate-ping" />
             </span>
           ) : !isOnline ? (
             <span
               className="absolute top-1.5 left-1.5 z-10 h-1.5 w-1.5 rounded-full bg-rose-500"
-              title="Offline"
+              title={t("hosts.offline")}
             />
           ) : latencyMs !== undefined && latencyMs !== null ? (
             <span
@@ -1070,12 +1070,12 @@ const HostCard = memo(function HostCard({
                   ? "bg-amber-400"
                   : "bg-rose-400"
               }`}
-              title={`Online · ${latencyMs}ms`}
+              title={t("hosts.onlineLatency", { ms: latencyMs })}
             />
           ) : (
             <span
               className="absolute top-1.5 left-1.5 z-10 h-1.5 w-1.5 rounded-full bg-emerald-400"
-              title="Online"
+              title={t("hosts.online")}
             />
           )}
         </div>
@@ -1089,9 +1089,9 @@ const HostCard = memo(function HostCard({
             {host.jump_host_id && (
               <span
                 className="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-mono font-medium bg-[var(--surface-high)] text-[var(--text-muted)] border border-[var(--border)]"
-                title="Connected via SSH Bastion / Jump Host"
+                title={t("hosts.jumpHostTitle")}
               >
-                via jump
+                {t("hosts.viaJump")}
               </span>
             )}
           </div>
@@ -1105,7 +1105,7 @@ const HostCard = memo(function HostCard({
       <div className="relative shrink-0 ml-2" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={() => onToggleMenu(host.id)}
-          title="Options"
+          title={t("hosts.options")}
           className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-0 group-hover:opacity-100 hover:bg-[var(--surface-high)] hover:text-white transition"
         >
           <MoreVertical size={14} />
@@ -1122,7 +1122,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--primary)] hover:text-[var(--on-primary)] transition"
             >
               <Terminal size={13} />
-              <span>Connect SSH</span>
+              <span>{t("hosts.connectSsh")}</span>
             </button>
 
             <button
@@ -1133,7 +1133,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
             >
               <FolderOpen size={13} />
-              <span>SFTP Files</span>
+              <span>{t("hosts.sftpFiles")}</span>
             </button>
 
             <button
@@ -1144,7 +1144,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
             >
               <Waypoints size={13} />
-              <span>Tunnels</span>
+              <span>{t("hosts.tunnels")}</span>
             </button>
 
             <div className="my-1 border-t border-[var(--border)]" />
@@ -1157,7 +1157,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
             >
               <CopyPlus size={13} />
-              <span>Duplicate</span>
+              <span>{t("hosts.duplicate")}</span>
             </button>
 
             <button
@@ -1168,7 +1168,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--text-primary)] hover:bg-[var(--surface-high)] transition"
             >
               <Pencil size={13} />
-              <span>Edit Host</span>
+              <span>{t("hosts.editHost")}</span>
             </button>
 
             <div className="my-1 border-t border-[var(--border)]" />
@@ -1181,7 +1181,7 @@ const HostCard = memo(function HostCard({
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[var(--danger)] hover:bg-[var(--danger)]/20 transition"
             >
               <Trash2 size={13} />
-              <span>Delete</span>
+              <span>{t("common.delete")}</span>
             </button>
           </div>
         )}

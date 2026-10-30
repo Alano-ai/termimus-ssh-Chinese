@@ -16,6 +16,7 @@ import { useKeychainStore } from "../../stores/useKeychainStore";
 import { api, HostInput } from "../../lib/api";
 import { DistroBadge, DISTRO_OPTIONS } from "./DistroBadge";
 import { CustomSelect } from "../ui/CustomSelect";
+import { t } from "../../i18n";
 
 interface HostModalProps {
   onOpenKeychain?: () => void;
@@ -100,7 +101,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
       }
     } else if (templateHost) {
       // ── DUPLICATE mode: pre-fill all configuration from the template host ──
-      setLabel(`[Copy] ${templateHost.label}`);
+      setLabel(t("hosts.copyPrefix", { label: templateHost.label }));
       setAddress(templateHost.address);
       setPort(templateHost.port);
       setUsername(templateHost.username);
@@ -198,7 +199,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      setError(`Failed to copy to clipboard: ${err}`);
+      setError(t("hosts.copyFailed", { error: String(err) }));
     }
   }
 
@@ -207,16 +208,16 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
     setError(null);
 
     if (!address.trim()) {
-      setError("Address (IP or hostname) is required");
+      setError(t("hosts.addressRequired"));
       return;
     }
     if (!username.trim()) {
-      setError("Username is required");
+      setError(t("hosts.usernameRequired"));
       return;
     }
 
     if (authMethod === "private_key" && !selectedCredentialId) {
-      setError("Please select an SSH key from Keychain");
+      setError(t("hosts.selectKey"));
       return;
     }
 
@@ -278,7 +279,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
       <div className="w-full max-w-4xl rounded-2xl border border-[var(--border)] bg-[var(--surface-low)] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="mb-5 flex items-center justify-between border-b border-[var(--border)] pb-3.5">
           <h2 className="text-base font-semibold text-[var(--text-primary)]">
-            {editingHost ? "Edit Host" : "New Host"}
+            {editingHost ? t("hosts.editHost") : t("hosts.newHost")}
           </h2>
           <button
             type="button"
@@ -300,31 +301,31 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
             {/* LEFT COLUMN: GENERAL & CONNECTION */}
             <div className="space-y-4">
               <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                General & Connection
+                {t("hosts.generalConnection")}
               </h3>
 
               <div>
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  Label / Display Name
+                  {t("hosts.labelDisplayName")}
                 </label>
                 <input
                   type="text"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
-                  placeholder="e.g. Production Web 01"
+                  placeholder={t("hosts.labelPlaceholder")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  Group / Folder
+                  {t("hosts.groupFolder")}
                 </label>
                 <CustomSelect
                   value={folderId}
                   onChange={setFolderId}
                   options={[
-                    { value: "", label: "No group (Ungrouped)" },
+                    { value: "", label: t("hosts.noGroup") },
                     ...folders.map((f) => ({ value: f.id, label: f.name })),
                   ]}
                 />
@@ -333,20 +334,20 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
               <div className="grid grid-cols-4 gap-3">
                 <div className="col-span-3">
                   <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                    Address / Hostname *
+                    {t("hosts.addressHostname")}
                   </label>
                   <input
                     type="text"
                     required
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="192.168.1.100 or server.example.com"
+                    placeholder={t("hosts.addressPlaceholder")}
                     className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-2 text-sm font-mono text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none transition-colors"
                   />
                 </div>
                 <div>
                   <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                    Port
+                    {t("common.port")}
                   </label>
                   <input
                     type="number"
@@ -359,27 +360,27 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
 
               <div>
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  Username *
+                  {t("hosts.username")}
                 </label>
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="e.g. root or ubuntu"
+                  placeholder={t("hosts.usernamePlaceholder")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-2 text-sm font-mono text-[var(--text-primary)] focus:border-[var(--primary)] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  Tags (comma separated)
+                  {t("hosts.tagsCommaSeparated")}
                 </label>
                 <input
                   type="text"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  placeholder="vps, homelab, docker, production"
+                  placeholder={t("hosts.tagsPlaceholder")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none transition-colors"
                 />
               </div>
@@ -387,14 +388,14 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
               {/* JUMP HOST / BASTION CONFIGURATION */}
               <div>
                 <label className="mb-1.5 flex items-center justify-between font-medium text-[var(--text-muted)]">
-                  <span>Connect via Jump Host / Bastion</span>
+                  <span>{t("hosts.jumpHostLabel")}</span>
                   <span className="text-[10px] text-[var(--text-muted)] font-mono">SSH ProxyJump</span>
                 </label>
                 <CustomSelect
                   value={jumpHostId}
                   onChange={setJumpHostId}
                   options={[
-                    { value: "", label: "Direct Connection (No Jump Host)" },
+                    { value: "", label: t("hosts.directConnection") },
                     ...hosts
                       .filter((h) => h.id !== editingHost?.id)
                       .map((h) => ({
@@ -405,7 +406,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                   ]}
                 />
                 <p className="mt-1 text-[11px] text-[var(--text-muted)] leading-relaxed">
-                  Traffic to this host will be securely tunneled through the selected Bastion server.
+                  {t("hosts.jumpHostHint")}
                 </p>
               </div>
             </div>
@@ -413,12 +414,12 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
             {/* RIGHT COLUMN: AUTHENTICATION */}
             <div className="space-y-4">
               <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                Authentication
+                {t("hosts.authentication")}
               </h3>
 
               <div>
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  Auth Method
+                  {t("hosts.authMethod")}
                 </label>
                 <div className="flex gap-2">
                   <button
@@ -433,7 +434,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                         : "bg-[var(--surface-container)] text-[var(--text-secondary)] border border-[var(--border)] hover:text-white hover:bg-[var(--surface-high)]"
                     }`}
                   >
-                    <Lock size={13} /> Password
+                    <Lock size={13} /> {t("common.password")}
                   </button>
                   <button
                     type="button"
@@ -447,7 +448,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                         : "bg-[var(--surface-container)] text-[var(--text-secondary)] border border-[var(--border)] hover:text-white hover:bg-[var(--surface-high)]"
                     }`}
                   >
-                    <Key size={13} /> Key PEM
+                    <Key size={13} /> {t("hosts.keyPem")}
                   </button>
                 </div>
               </div>
@@ -460,17 +461,17 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                       <label className="mb-1.5 flex items-center justify-between font-medium text-[var(--text-muted)]">
                         <span className="flex items-center gap-1.5">
                           <UserCheck size={12} className="text-[var(--tertiary)]" />
-                          Keychain Identity
+                          {t("hosts.keychainIdentity")}
                         </span>
                         <span className="text-[10px] text-[var(--text-muted)]">
-                          Reusable credentials
+                          {t("hosts.reusableCredentials")}
                         </span>
                       </label>
                       <CustomSelect
                         value={selectedCredentialId}
                         onChange={handleSelectCredential}
                         options={[
-                          { value: "", label: "-- Custom one-off password --" },
+                          { value: "", label: t("hosts.customPassword") },
                           ...availableIdentities.map((item) => ({
                             value: item.id,
                             label: item.name,
@@ -484,7 +485,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                   {!selectedIdentityItem && (
                     <div>
                       <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                        Password
+                        {t("common.password")}
                       </label>
                       <div className="relative">
                         <input
@@ -495,7 +496,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                             setShowPassword(true);
                           }}
                           disabled={passwordLoading}
-                          placeholder={passwordLoading ? "Loading..." : "Server password..."}
+                          placeholder={passwordLoading ? t("common.loading") : t("hosts.serverPassword")}
                           className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-container)] px-3 py-2 pr-9 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none transition-colors disabled:opacity-60"
                         />
                         <button
@@ -503,7 +504,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                           onClick={handleTogglePassword}
                           disabled={passwordLoading}
                           className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-50 transition-colors"
-                          title={showPassword ? "Hide password" : "Show password"}
+                          title={showPassword ? t("hosts.hidePassword") : t("hosts.showPassword")}
                         >
                           {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                         </button>
@@ -518,10 +519,10 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                     <label className="mb-1.5 flex items-center justify-between font-medium text-[var(--text-muted)]">
                       <span className="flex items-center gap-1.5">
                         <KeyRound size={13} className="text-[var(--primary)]" />
-                        Keychain Key
+                        {t("hosts.keychainKey")}
                       </span>
                       <span className="text-[10px] text-[var(--text-muted)]">
-                        Select from Keychain
+                        {t("hosts.selectFromKeychain")}
                       </span>
                     </label>
                     <CustomSelect
@@ -531,8 +532,8 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                         {
                           value: "",
                           label: availableKeys.length > 0
-                            ? "-- Select an SSH key from Keychain --"
-                            : "-- No SSH keys in Keychain --",
+                            ? t("hosts.selectKeyOption")
+                            : t("hosts.noKeysOption"),
                         },
                         ...availableKeys.map((item) => ({
                           value: item.id,
@@ -556,7 +557,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                               {selectedKeyItem.name}
                             </p>
                             <p className="text-[10px] text-[var(--text-muted)]">
-                              Type {selectedKeyItem.key_type || "SSH"}
+                              {t("hosts.keyType", { type: selectedKeyItem.key_type || "SSH" })}
                               {selectedKeyItem.username && ` · ${selectedKeyItem.username}`}
                             </p>
                           </div>
@@ -574,11 +575,11 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                           >
                             {copied ? (
                               <>
-                                <Check size={12} /> Copied!
+                                <Check size={12} /> {t("common.copied")}
                               </>
                             ) : (
                               <>
-                                <Copy size={12} /> Copy Public Key
+                                <Copy size={12} /> {t("hosts.copyPublicKey")}
                               </>
                             )}
                           </button>
@@ -592,11 +593,11 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                       )}
 
                       <p className="text-[11px] text-[var(--text-muted)]">
-                        This host will authenticate using the{" "}
+                        {t("hosts.authenticateKeyPrefix")}{" "}
                         <strong className="text-[var(--text-primary)]">
                           {selectedKeyItem.name}
                         </strong>{" "}
-                        private key from your Keychain.
+                        {t("hosts.authenticateKeySuffix")}
                       </p>
                     </div>
                   ) : (
@@ -604,12 +605,13 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                       <KeyRound size={22} className="mx-auto mb-2 text-[var(--text-muted)] opacity-50" />
                       <p className="text-xs font-medium text-[var(--text-secondary)]">
                         {availableKeys.length > 0
-                          ? "Select an SSH key from Keychain above"
-                          : "No SSH keys found in Keychain"}
+                          ? t("hosts.selectKeyAbove")
+                          : t("hosts.noKeysFound")}
                       </p>
                       <p className="mt-1 text-[11px] text-[var(--text-muted)] leading-relaxed">
-                        To add, generate, or import SSH private keys, manage them in the{" "}
-                        <strong className="text-[var(--text-primary)]">Keychain</strong> menu.
+                        {t("hosts.manageKeysPrefix")}{" "}
+                        <strong className="text-[var(--text-primary)]">{t("nav.keychain")}</strong>{" "}
+                        {t("hosts.manageKeysSuffix")}
                       </p>
                       {onOpenKeychain && (
                         <button
@@ -621,7 +623,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                           className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)]/15 px-3 py-1.5 text-xs font-semibold text-[var(--primary)] hover:bg-[var(--primary)]/25 border border-[var(--primary)]/30 transition-colors"
                         >
                           <KeyRound size={13} />
-                          <span>Go to Keychain</span>
+                          <span>{t("hosts.goToKeychain")}</span>
                         </button>
                       )}
                     </div>
@@ -646,12 +648,12 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                     <Cpu size={18} />
                   </div>
                 )}
-                <span className="text-[10px] text-[var(--text-muted)] font-mono">preview</span>
+                <span className="text-[10px] text-[var(--text-muted)] font-mono">{t("hosts.preview")}</span>
               </div>
 
               <div className="flex-1 min-w-0">
                 <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-                  OS / Distro Icon
+                  {t("hosts.osIcon")}
                 </label>
                 <CustomSelect
                   value={osIcon}
@@ -662,7 +664,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                   }))}
                 />
                 <p className="mt-1 text-[11px] text-[var(--text-muted)] leading-relaxed">
-                  Leave on <span className="font-mono">Auto-detect</span> — the icon will be set automatically the first time you SSH into this host.
+                  {t("hosts.autoDetectHintPrefix")} <span className="font-mono">{t("hosts.autoDetect")}</span> {t("hosts.autoDetectHintSuffix")}
                 </p>
               </div>
             </div>
@@ -675,14 +677,14 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
               onClick={closeHostModal}
               className="rounded-xl px-4 py-2 text-xs font-medium text-[var(--text-muted)] hover:bg-[var(--surface-high)] hover:text-white transition-colors"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-xl bg-[var(--primary)] px-5 py-2 text-xs font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50 shadow-sm"
             >
-              {submitting ? "Saving..." : editingHost ? "Update Host" : "Save Host"}
+              {submitting ? t("common.saving") : editingHost ? t("hosts.updateHost") : t("hosts.saveHost")}
             </button>
           </div>
         </form>

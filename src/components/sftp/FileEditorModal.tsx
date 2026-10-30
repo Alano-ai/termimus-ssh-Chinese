@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Save, FileCode, Check, AlertCircle, Loader2 } from "lucide-react";
 import { api, FileEntry } from "../../lib/api";
+import { t } from "../../i18n";
 
 interface FileEditorModalProps {
   file: FileEntry | null;
@@ -40,7 +41,7 @@ export function FileEditorModal({
       try {
         let text = "";
         if (isRemote) {
-          if (!sessionId) throw new Error("No active SFTP session");
+          if (!sessionId) throw new Error(t("sftp.noActiveSession"));
           text = await api.readSftpFile(sessionId, file.path);
         } else {
           text = await api.readLocalFile(file.path);
@@ -73,7 +74,7 @@ export function FileEditorModal({
 
     try {
       if (isRemote) {
-        if (!sessionId) throw new Error("No active SFTP session");
+        if (!sessionId) throw new Error(t("sftp.noActiveSession"));
         await api.writeSftpFile(sessionId, file.path, content);
       } else {
         await api.writeLocalFile(file.path, content);
@@ -116,7 +117,7 @@ export function FileEditorModal({
 
   function handleClose() {
     if (isDirty) {
-      if (!confirm("You have unsaved changes. Are you sure you want to close?")) {
+      if (!confirm(t("common.unsavedChanges"))) {
         return;
       }
     }
@@ -143,11 +144,11 @@ export function FileEditorModal({
               </span>
               {isRemote ? (
                 <span className="rounded bg-[var(--primary)]/15 px-1.5 py-0.5 font-mono text-[9px] text-[var(--primary)] shrink-0">
-                  Remote (SFTP)
+                  {t("sftp.remoteBadge")}
                 </span>
               ) : (
                 <span className="rounded bg-[var(--surface-high)] px-1.5 py-0.5 font-mono text-[9px] text-[var(--text-muted)] shrink-0">
-                  Local
+                  {t("sftp.localBadge")}
                 </span>
               )}
             </div>
@@ -158,13 +159,13 @@ export function FileEditorModal({
             {isDirty && !saving && (
               <span className="flex items-center gap-1.5 font-mono text-[11px] text-[var(--warning)]">
                 <span className="h-2 w-2 rounded-full bg-[var(--warning)] animate-pulse" />
-                Unsaved changes
+                {t("sftp.unsavedChanges")}
               </span>
             )}
             {saveSuccess && (
               <span className="flex items-center gap-1 font-mono text-[11px] text-[var(--success)]">
                 <Check size={13} />
-                Saved
+                {t("sftp.saved")}
               </span>
             )}
 
@@ -178,7 +179,7 @@ export function FileEditorModal({
               ) : (
                 <Save size={13} />
               )}
-              <span>Save</span>
+              <span>{t("common.save")}</span>
               <kbd className="hidden sm:inline font-mono text-[10px] bg-black/20 px-1 py-0.5 rounded opacity-75">
                 Ctrl+S
               </kbd>
@@ -206,7 +207,7 @@ export function FileEditorModal({
           {loading ? (
             <div className="flex h-full w-full items-center justify-center text-xs text-[var(--text-muted)]">
               <Loader2 size={18} className="animate-spin mr-2 text-[var(--primary)]" />
-              Loading file content...
+              {t("sftp.loadingFile")}
             </div>
           ) : (
             <>
@@ -237,9 +238,9 @@ export function FileEditorModal({
         {/* Footer info bar */}
         <div className="flex h-7 items-center justify-between border-t border-[var(--border)] bg-[var(--surface-low)] px-4 font-mono text-[10px] text-[var(--text-muted)] shrink-0">
           <div>
-            Lines: {lineCount} | Characters: {content.length}
+            {t("sftp.linesChars", { lines: lineCount, chars: content.length })}
           </div>
-          <div>UTF-8 Plain Text</div>
+          <div>{t("sftp.utf8Plain")}</div>
         </div>
       </div>
     </div>

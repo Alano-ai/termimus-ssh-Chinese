@@ -29,6 +29,7 @@ import { TerminalHighlighter } from "../../lib/terminalHighlighter";
 import { findPaneContainingTab } from "../../lib/layoutTree";
 import { ConnectionProgress, ConnectionLog } from "./ConnectionProgress";
 import { TerminalSearchBar } from "./TerminalSearchBar";
+import { t } from "../../i18n";
 
 interface XtermViewProps {
   sessionId: string;
@@ -137,7 +138,7 @@ async function handleCopyFromTerminal(
         await navigator.clipboard.writeText(selection);
       }
       const count = selection.length;
-      onNotify?.(count > 1 ? `Copied to clipboard (${count} chars)` : "Copied to clipboard");
+      onNotify?.(count > 1 ? t("term.copiedChars", { count }) : t("term.copied"));
     } catch (err) {
       console.warn("Clipboard copy failed:", err);
     }
@@ -478,14 +479,14 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
             setIsConnected(false);
             setConnectionError(errStr);
             setError(sessionId, errStr);
-            termRef.current?.write(`\r\n\x1b[31mFailed to start local terminal: ${errStr}\x1b[0m\r\n`);
+            termRef.current?.write(`\r\n\x1b[31m${t("term.failedStartLocal")}${errStr}\x1b[0m\r\n`);
           });
         return;
       }
 
       const initialLog: ConnectionLog = {
         step: 1,
-        message: `Initiating connection to ${host?.address || "server"}...`,
+        message: t("term.initiatingConnection", { address: host?.address || t("term.server") }),
         timestamp: new Date().toISOString(),
         isError: false,
       };
@@ -525,7 +526,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           setIsConnected(false);
           setConnectionError(errStr);
           setError(sessionId, errStr);
-          termRef.current?.write(`\r\n\x1b[31mFailed to connect: ${errStr}\x1b[0m\r\n`);
+          termRef.current?.write(`\r\n\x1b[31m${t("term.failedConnect")}${errStr}\x1b[0m\r\n`);
         });
     },
     [hostId, sessionId, host, setConnected, setError, isLocal]
@@ -900,7 +901,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Copy size={13} />
-              <span>Copy</span>
+              <span>{t("common.copy")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘C" : "Ctrl+Shift+C"}
@@ -917,7 +918,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Clipboard size={13} />
-              <span>Paste</span>
+              <span>{t("term.paste")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘V" : "Ctrl+Shift+V"}
@@ -934,7 +935,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <CheckSquare size={13} />
-              <span>Select All</span>
+              <span>{t("term.selectAll")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘A" : "Ctrl+Shift+A"}
@@ -953,7 +954,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Search size={13} />
-              <span>Find in Terminal</span>
+              <span>{t("term.findInTerminal")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘F" : "Ctrl+F"}
@@ -970,7 +971,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Trash2 size={13} />
-              <span>Clear Buffer</span>
+              <span>{t("term.clearBuffer")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘K" : "Ctrl+Shift+K"}
@@ -979,7 +980,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
 
           {/* Font Size Zoom Controls */}
           <div className="flex items-center justify-between px-2.5 py-1 text-[11px] text-[var(--text-muted)] font-mono">
-            <span>Font Size</span>
+            <span>{t("term.fontSize")}</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => {
@@ -987,7 +988,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
                     adjustTerminalFontSize(termRef.current, fitAddonRef.current, sessionId, -1);
                   }
                 }}
-                title={`Zoom Out (${isMac ? "⌘-" : "Ctrl+-"})`}
+                title={t("term.zoomOut", { shortcut: isMac ? "⌘-" : "Ctrl+-" })}
                 className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)]"
               >
                 <ZoomOut size={12} />
@@ -998,10 +999,10 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
                     adjustTerminalFontSize(termRef.current, fitAddonRef.current, sessionId, "reset");
                   }
                 }}
-                title={`Reset Zoom (${isMac ? "⌘0" : "Ctrl+0"})`}
+                title={t("term.resetZoom", { shortcut: isMac ? "⌘0" : "Ctrl+0" })}
                 className="rounded px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)]"
               >
-                Reset
+                {t("term.reset")}
               </button>
               <button
                 onClick={() => {
@@ -1009,7 +1010,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
                     adjustTerminalFontSize(termRef.current, fitAddonRef.current, sessionId, 1);
                   }
                 }}
-                title={`Zoom In (${isMac ? "⌘+" : "Ctrl++"})`}
+                title={t("term.zoomIn", { shortcut: isMac ? "⌘+" : "Ctrl++" })}
                 className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)]"
               >
                 <ZoomIn size={12} />
@@ -1029,7 +1030,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Columns2 size={13} />
-              <span>Split Right</span>
+              <span>{t("term.splitRight")}</span>
             </div>
           </button>
 
@@ -1043,7 +1044,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <Rows2 size={13} />
-              <span>Split Down</span>
+              <span>{t("term.splitDown")}</span>
             </div>
           </button>
 
@@ -1059,7 +1060,7 @@ export function XtermView({ sessionId, hostId, visible, isFocused = true }: Xter
           >
             <div className="flex items-center gap-2">
               <RefreshCw size={13} />
-              <span>Reconnect Session</span>
+              <span>{t("term.reconnectSession")}</span>
             </div>
           </button>
         </div>

@@ -1,4 +1,5 @@
 import type { ITheme, Terminal } from "@xterm/xterm";
+import { t } from "../i18n";
 
 export interface TerminalSemanticColors {
   error: string;
@@ -34,7 +35,7 @@ export interface TerminalTheme {
 const OBSIDIAN: TerminalTheme = {
   id: "obsidian",
   label: "Terminal Obsidian",
-  description: "Default Termimus theme",
+  description: t("themes.obsidianDesc"),
   xterm: {
     background: "#0a0e14",
     foreground: "#f0f6fc",
@@ -75,7 +76,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "termius-green",
     label: "Termius Green",
-    description: "Termius-style dark with green phosphor text",
+    description: t("themes.termiusGreenDesc"),
     xterm: {
       background: "#14171c",
       foreground: "#5eeaa0",
@@ -118,7 +119,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "everforest",
     label: "Everforest",
-    description: "Warm, low-contrast, easy on the eyes",
+    description: t("themes.everforestDesc"),
     xterm: {
       background: "#2b3339",
       foreground: "#d3c6aa",
@@ -161,7 +162,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "one-dark",
     label: "One Dark",
-    description: "Atom-inspired neutral dark",
+    description: t("themes.oneDarkDesc"),
     xterm: {
       background: "#282c34",
       foreground: "#abb2bf",
@@ -199,7 +200,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "dracula",
     label: "Dracula",
-    description: "High-contrast purple dark",
+    description: t("themes.draculaDesc"),
     xterm: {
       background: "#282a36",
       foreground: "#f8f8f2",
@@ -237,7 +238,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "nord",
     label: "Nord",
-    description: "Cool low-contrast arctic",
+    description: t("themes.nordDesc"),
     xterm: {
       background: "#2e3440",
       foreground: "#d8dee9",
@@ -275,7 +276,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "solarized-dark",
     label: "Solarized Dark",
-    description: "Classic sysadmin palette",
+    description: t("themes.solarizedDarkDesc"),
     xterm: {
       background: "#002b36",
       foreground: "#839496",
@@ -313,7 +314,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "light",
     label: "Paper Light",
-    description: "Light theme for bright rooms",
+    description: t("themes.paperLightDesc"),
     xterm: {
       background: "#ffffff",
       foreground: "#1a1a1a",

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { listen } from "@tauri-apps/api/event";
 import { api, FileEntry, Host } from "../lib/api";
 import { parentPath } from "../lib/format";
+import { t } from "../i18n";
 
 export type SftpPane = "local" | "remote";
 
@@ -324,12 +325,12 @@ export const useSftpStore = create<SftpState>((set, get) => {
     refresh: () => Promise<void>
   ): Promise<void> => {
     if (roots.length === 0 || get().transferring) return;
-    const verb = direction === "upload" ? "Uploading" : "Downloading";
-    const mkDirVerb = direction === "upload" ? "Creating remote folder" : "Creating local folder";
+    const verb = direction === "upload" ? t("sftp.uploading") : t("sftp.downloading");
+    const mkDirVerb = direction === "upload" ? t("sftp.creatingRemoteFolder") : t("sftp.creatingLocalFolder");
 
     set({
       transferring: true,
-      transferMessage: "Scanning selected items...",
+      transferMessage: t("sftp.scanningItems"),
       transferProgress: null,
       cancelRequested: false,
       error: null,
@@ -345,7 +346,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
         )
       );
       if (!effective) {
-        set({ error: "Transfer cancelled." });
+        set({ error: t("sftp.transferCancelled") });
         return;
       }
       const { dirs, files } = effective;
@@ -376,7 +377,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
           cancelled = true;
           break;
         }
-        set({ transferMessage: `${mkDirVerb}: ${dir.to}` });
+        set({ transferMessage: t("sftp.transferMessageDir", { verb: mkDirVerb, dir: dir.to }) });
         try {
           await ensureDir(direction, sessionId, dir.to);
         } catch (e) {
@@ -392,7 +393,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
             break;
           }
           set({
-            transferMessage: `${verb}: ${file.name}`,
+            transferMessage: t("sftp.transferMessageFile", { verb, name: file.name }),
             transferProgress: {
               ...baseProgress(),
               currentFile: { path: file.from, name: file.name, size: file.size },
@@ -415,14 +416,16 @@ export const useSftpStore = create<SftpState>((set, get) => {
 
       if (cancelled) {
         set({
-          error: `Transfer cancelled at ${doneCount}/${total}.${
-            failed.length > 0 ? ` ${failed.length} item(s) had failed before cancellation.` : ""
-          }`,
+          error: t("sftp.transferCancelledAt", {
+            done: doneCount,
+            total,
+            extra: failed.length > 0 ? t("sftp.transferCancelledExtra", { count: failed.length }) : "",
+          }),
         });
       } else if (failed.length > 0) {
         const sample = failed.slice(0, 5).join("\n");
-        const more = failed.length > 5 ? `\n...and ${failed.length - 5} more` : "";
-        set({ error: `${failed.length} item(s) failed to transfer:\n${sample}${more}` });
+        const more = failed.length > 5 ? t("sftp.moreItems", { count: failed.length - 5 }) : "";
+        set({ error: t("sftp.transferFailed", { count: failed.length, sample, more }) });
       }
     } finally {
       set({ transferring: false, transferMessage: null, transferProgress: null, cancelRequested: false });
@@ -462,7 +465,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
         const entries = await api.listLocal(home);
         set({ localPath: home, localEntries: entries, localLoading: false });
       } catch (e) {
-        set({ localLoading: false, error: `Local fs error: ${String(e)}` });
+        set({ localLoading: false, error: t("sftp.localFsError", { error: String(e) }) });
       }
     },
 
@@ -477,7 +480,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
         const entries = await api.listLocal(path);
         set({ localPath: path, localEntries: entries, localLoading: false });
       } catch (e) {
-        set({ localLoading: false, error: `Failed to open ${path}: ${String(e)}` });
+        set({ localLoading: false, error: t("sftp.failedToOpen", { path, error: String(e) }) });
       }
     },
 
@@ -560,7 +563,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
       }
       await navigateLocal(localPath);
       if (failed.length > 0) {
-        set({ error: `Failed to delete ${failed.length} item(s):\n${failed.slice(0, 5).join("\n")}` });
+        set({ error: t("sftp.failedToDelete", { count: failed.length, sample: failed.slice(0, 5).join("\n") }) });
       }
     },
 
@@ -591,7 +594,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
       } catch (e) {
         set({
           remoteLoading: false,
-          error: `SFTP Connection failed: ${String(e)}`,
+          error: t("sftp.connectionFailed", { error: String(e) }),
           remoteSessionId: null,
         });
       }
@@ -611,7 +614,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
         const entries = await api.listSftp(remoteSessionId, path);
         set({ remotePath: path, remoteEntries: entries, remoteLoading: false });
       } catch (e) {
-        set({ remoteLoading: false, error: `Remote list error: ${String(e)}` });
+        set({ remoteLoading: false, error: t("sftp.remoteListError", { error: String(e) }) });
       }
     },
 
@@ -636,7 +639,7 @@ export const useSftpStore = create<SftpState>((set, get) => {
       }
       await navigateRemote(remotePath);
       if (failed.length > 0) {
-        set({ error: `Failed to delete ${failed.length} item(s):\n${failed.slice(0, 5).join("\n")}` });
+        set({ error: t("sftp.failedToDelete", { count: failed.length, sample: failed.slice(0, 5).join("\n") }) });
       }
     },
 

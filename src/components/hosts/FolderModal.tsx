@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, FolderPlus } from "lucide-react";
 import { useHostStore } from "../../stores/useHostStore";
+import { t } from "../../i18n";
 
 export function FolderModal() {
   const { isFolderModalOpen, editingFolder, closeFolderModal, saveFolder } = useHostStore();
@@ -20,7 +21,7 @@ export function FolderModal() {
     setError(null);
 
     if (!name.trim()) {
-      setError("Group name is required");
+      setError(t("hosts.groupNameRequired"));
       return;
     }
 
@@ -42,7 +43,7 @@ export function FolderModal() {
           <div className="flex items-center gap-2">
             <FolderPlus size={17} className="text-[var(--primary)]" />
             <h2 className="text-sm font-semibold text-[var(--text-primary)]">
-              {editingFolder ? "Rename Group" : "New Host Group"}
+              {editingFolder ? t("hosts.renameGroup") : t("hosts.newHostGroup")}
             </h2>
           </div>
           <button
@@ -62,14 +63,14 @@ export function FolderModal() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-              Group Name
+              {t("hosts.groupName")}
             </label>
             <input
               type="text"
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. AWS Production, Homelab, Client Servers"
+              placeholder={t("hosts.groupNamePlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--canvas)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
             />
           </div>
@@ -80,14 +81,14 @@ export function FolderModal() {
               onClick={closeFolderModal}
               className="rounded-md px-3.5 py-1.5 text-xs text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-md bg-[var(--primary)] px-3.5 py-1.5 text-xs font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
             >
-              {submitting ? "Saving..." : editingFolder ? "Save" : "Create Group"}
+              {submitting ? t("common.saving") : editingFolder ? t("common.save") : t("hosts.createGroup")}
             </button>
           </div>
         </form>

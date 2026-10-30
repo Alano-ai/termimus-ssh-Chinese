@@ -30,6 +30,7 @@ import { useVaultStore } from "../../stores/useVaultStore";
 import { getAllSessionIdsInTree, getAllLeafPanes } from "../../lib/layoutTree";
 import { QuickConnectModal } from "./QuickConnectModal";
 import { ActiveTab } from "./Sidebar";
+import { t } from "../../i18n";
 
 const appWindow = getCurrentWindow();
 
@@ -366,7 +367,7 @@ export function Header({
             data-tauri-drag-region="false"
             onClick={onGoHome}
             onContextMenu={(e) => e.stopPropagation()}
-            title="Home / Hosts (Alt+H)"
+            title={t("header.homeTitle")}
             className={`group relative flex h-7.5 items-center gap-1.5 rounded-lg px-2.5 text-xs shrink-0 cursor-pointer transition-all select-none ${
               isHomeActive
                 ? "bg-[var(--surface-container)] text-[var(--text-primary)] border border-[var(--border)] shadow-xs font-semibold"
@@ -381,7 +382,7 @@ export function Header({
                   : "text-[var(--text-muted)] group-hover:text-[var(--text-primary)]"
               }`}
             />
-            <span>Home</span>
+            <span>{t("header.home")}</span>
           </button>
 
           {groups.map((group) => {
@@ -438,8 +439,8 @@ export function Header({
                 }}
                 title={
                   count > 1
-                    ? `${displayLabel} — ${count} terminals in split screen. Middle-click or ✕ to close.`
-                    : "Drag to reorder/split. Middle-click or ✕ to close."
+                    ? t("header.tabTitleSplit", { label: displayLabel, count })
+                    : t("header.tabTitleDrag")
                 }
                 className={`group relative flex h-7.5 items-center gap-2 rounded-lg px-2.5 text-xs font-mono min-w-[130px] max-w-[220px] cursor-grab active:cursor-grabbing transition-all select-none ${
                   isActive
@@ -465,7 +466,7 @@ export function Header({
                 <span className="truncate flex-1 min-w-0 text-center leading-none translate-y-[1px]">{displayLabel}</span>
 
                 {broadcastGroupIds.includes(group.id) && (
-                  <span title="Input Broadcast Active (Interconnected)" className="flex items-center shrink-0">
+                  <span title={t("header.broadcastTitle")} className="flex items-center shrink-0">
                     <Radio
                       size={11}
                       className="text-[var(--primary)] animate-pulse shrink-0"
@@ -480,7 +481,7 @@ export function Header({
                     e.stopPropagation();
                     closeGroup(group.id);
                   }}
-                  title="Close tab (or middle-click)"
+                  title={t("header.closeTabTitle")}
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md transition-all cursor-pointer ${
                     isActive
                       ? "opacity-60 hover:opacity-100 hover:bg-white/10 text-[var(--text-muted)] hover:text-white"
@@ -497,7 +498,7 @@ export function Header({
           <button
             data-tauri-drag-region="false"
             onClick={() => setIsQuickConnectOpen(true)}
-            title={`New connection / Quick connect (${isMac ? "⌘K" : "Ctrl+K"})`}
+            title={t("header.newConnectionTitle", { shortcut: isMac ? "⌘K" : "Ctrl+K" })}
             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--primary)] transition-colors"
           >
             <Plus size={14} />
@@ -516,7 +517,7 @@ export function Header({
             type="button"
             data-tauri-drag-region="false"
             onClick={lockApp}
-            title="Lock App"
+            title={t("header.lockApp")}
             className="flex h-7 w-7 items-center justify-center rounded-md mr-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-container)] transition-colors cursor-pointer"
           >
             <Lock size={13} />
@@ -530,8 +531,8 @@ export function Header({
             onClick={toggleSnippetSidebar}
             title={
               isSnippetSidebarOpen
-                ? "Collapse snippets sidebar (Alt+S)"
-                : "Expand snippets sidebar (Alt+S)"
+                ? t("header.collapseSnippets")
+                : t("header.expandSnippets")
             }
             className={`flex h-7 items-center gap-1.5 rounded-md px-2 mr-1 text-[11px] font-mono transition-colors ${
               isSnippetSidebarOpen
@@ -540,7 +541,7 @@ export function Header({
             }`}
           >
             <Braces size={13} className={isSnippetSidebarOpen ? "text-[var(--primary)]" : ""} />
-            <span className="hidden sm:inline">Snippets</span>
+            <span className="hidden sm:inline">{t("header.snippets")}</span>
             {isSnippetSidebarOpen ? (
               <PanelRightClose size={13} className="opacity-70" />
             ) : (
@@ -557,21 +558,21 @@ export function Header({
           <div data-tauri-drag-region="false" className="flex h-full items-stretch shrink-0">
             <button
               onClick={handleMinimize}
-              title="Minimize"
+              title={t("header.minimize")}
               className="flex w-11 items-center justify-center text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors"
             >
               <Minus size={14} />
             </button>
             <button
               onClick={handleToggleMaximize}
-              title={isMaximized ? "Restore" : "Maximize (F11 for Full Screen)"}
+              title={isMaximized ? t("header.restore") : t("header.maximize")}
               className="flex w-11 items-center justify-center text-[var(--text-muted)] hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors"
             >
               {isMaximized ? <Copy size={12} /> : <Square size={12} />}
             </button>
             <button
               onClick={handleClose}
-              title="Close"
+              title={t("header.close")}
               className="flex w-11 items-center justify-center text-[var(--text-muted)] hover:bg-[var(--danger)] hover:text-white transition-colors"
             >
               <X size={15} />
@@ -596,7 +597,7 @@ export function Header({
               >
                 <div className="flex items-center gap-2">
                   <CopyPlus size={13} />
-                  <span>Duplicate Tab</span>
+                  <span>{t("header.duplicateTab")}</span>
                 </div>
               </button>
 
@@ -607,7 +608,7 @@ export function Header({
               >
                 <div className="flex items-center gap-2">
                   <Columns2 size={13} />
-                  <span>Split Screen (Right)</span>
+                  <span>{t("header.splitRight")}</span>
                 </div>
               </button>
 
@@ -618,7 +619,7 @@ export function Header({
               >
                 <div className="flex items-center gap-2">
                   <Rows2 size={13} />
-                  <span>Split Screen (Down)</span>
+                  <span>{t("header.splitDown")}</span>
                 </div>
               </button>
 
@@ -629,7 +630,7 @@ export function Header({
               >
                 <div className="flex items-center gap-2">
                   <Radio size={13} className={isTargetBroadcast ? "animate-pulse" : ""} />
-                  <span>{isTargetBroadcast ? "Disconnect Input Sync" : "Sync All Panes"}</span>
+                  <span>{isTargetBroadcast ? t("header.disconnectSync") : t("header.syncAllPanes")}</span>
                 </div>
                 <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
                   Alt+B
@@ -645,7 +646,7 @@ export function Header({
               >
                 <div className="flex items-center gap-2">
                   <X size={13} />
-                  <span>Close Tab</span>
+                  <span>{t("header.closeTab")}</span>
                 </div>
               </button>
 
@@ -657,7 +658,7 @@ export function Header({
                 >
                   <div className="flex items-center gap-2">
                     <XCircle size={13} />
-                    <span>Close Other Tabs</span>
+                    <span>{t("header.closeOtherTabs")}</span>
                   </div>
                 </button>
               )}
@@ -670,7 +671,7 @@ export function Header({
                 >
                   <div className="flex items-center gap-2">
                     <ArrowRightToLine size={13} />
-                    <span>Close Tabs to the Right</span>
+                    <span>{t("header.closeTabsRight")}</span>
                   </div>
                 </button>
               )}
@@ -689,7 +690,7 @@ export function Header({
           >
             <div className="flex items-center gap-2">
               <Plus size={13} />
-              <span>New Connection</span>
+              <span>{t("header.newConnection")}</span>
             </div>
             <span className="text-[10px] font-mono text-[var(--text-muted)] group-hover:text-black/70">
               {isMac ? "⌘K" : "Ctrl+K"}
@@ -704,7 +705,7 @@ export function Header({
             >
               <div className="flex items-center gap-2">
                 <XCircle size={13} />
-                <span>Close All Tabs</span>
+                <span>{t("header.closeAllTabs")}</span>
               </div>
             </button>
           )}
@@ -728,12 +729,12 @@ function HeaderSyncIndicator({ onOpenSyncSettings }: { onOpenSyncSettings?: () =
       onClick={onOpenSyncSettings}
       title={
         syncStatus === "syncing"
-          ? "Syncing data with relay..."
+          ? t("sync.syncingTitle")
           : syncStatus === "connected"
-          ? `Relay Connected (Rev #${latestServerVersion ?? 0}) • Click to open Sync Settings`
+          ? t("sync.connectedTitle", { version: latestServerVersion ?? 0 })
           : syncStatus === "error"
-          ? `Sync Error: ${lastError ?? "Connection failed"} • Click to check settings`
-          : "Sync Relay Configured • Click to open Sync Settings"
+          ? t("sync.errorTitle", { error: lastError ?? t("sync.connectionFailed") })
+          : t("sync.configuredTitle")
       }
       className={`flex h-7 items-center gap-1.5 rounded-md px-2 mr-1 text-[11px] font-mono transition-colors ${
         syncStatus === "syncing"
@@ -761,7 +762,7 @@ function HeaderSyncIndicator({ onOpenSyncSettings }: { onOpenSyncSettings?: () =
         <Cloud size={14} className="opacity-60" />
       )}
       <span className="hidden xl:inline text-[10px] uppercase font-semibold tracking-wider">
-        {syncStatus === "syncing" ? "Syncing" : syncStatus === "connected" ? "Synced" : syncStatus === "error" ? "Sync Err" : "Sync"}
+        {syncStatus === "syncing" ? t("sync.syncing") : syncStatus === "connected" ? t("sync.synced") : syncStatus === "error" ? t("sync.syncErr") : t("sync.sync")}
       </span>
     </button>
   );

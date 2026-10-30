@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { getVersion } from "@tauri-apps/api/app";
+import { t } from "../i18n";
 
 interface UpdateState {
   currentVersion: string;
@@ -107,7 +108,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
         set({
           isChecking: false,
           lastChecked: now,
-          error: "Could not retrieve latest version information.",
+          error: t("update.couldNotRetrieve"),
         });
         return false;
       }
@@ -132,7 +133,7 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
       set({
         isChecking: false,
         lastChecked: now,
-        error: "Failed to connect to update server.",
+        error: t("update.connectFailed"),
       });
       return false;
     }

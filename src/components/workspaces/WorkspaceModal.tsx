@@ -17,6 +17,7 @@ import {
 import { useHostStore } from "../../stores/useHostStore";
 import { LayoutBlueprint } from "./WorkspaceCard";
 import { CustomSelect } from "../ui/CustomSelect";
+import { t } from "../../i18n";
 
 const LAYOUT_OPTIONS: {
   id: PresetLayoutType;
@@ -24,12 +25,12 @@ const LAYOUT_OPTIONS: {
   panes: number;
   icon: typeof Columns;
 }[] = [
-  { id: "split-vertical", label: "Side by Side (1×2)", panes: 2, icon: Columns },
-  { id: "split-horizontal", label: "Top & Bottom (2×1)", panes: 2, icon: Rows },
-  { id: "grid-4", label: "2×2 Quad Grid (4)", panes: 4, icon: Grid2X2 },
-  { id: "split-1-2", label: "1 Left + 2 Right (3)", panes: 3, icon: LayoutGrid },
-  { id: "split-2-1", label: "2 Top + 1 Bottom (3)", panes: 3, icon: LayoutGrid },
-  { id: "triple-column", label: "Triple Column (1×3)", panes: 3, icon: Columns },
+  { id: "split-vertical", label: t("workspaces.layoutSideBySide"), panes: 2, icon: Columns },
+  { id: "split-horizontal", label: t("workspaces.layoutTopBottom"), panes: 2, icon: Rows },
+  { id: "grid-4", label: t("workspaces.layoutQuad"), panes: 4, icon: Grid2X2 },
+  { id: "split-1-2", label: t("workspaces.layout1Left2Right"), panes: 3, icon: LayoutGrid },
+  { id: "split-2-1", label: t("workspaces.layout2Top1Bottom"), panes: 3, icon: LayoutGrid },
+  { id: "triple-column", label: t("workspaces.layoutTripleColumn"), panes: 3, icon: Columns },
 ];
 
 export function WorkspaceModal() {
@@ -90,7 +91,7 @@ export function WorkspaceModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Please provide a name for this workspace preset.");
+      setError(t("workspaces.nameRequired"));
       return;
     }
 
@@ -101,7 +102,7 @@ export function WorkspaceModal() {
     }));
 
     if (nodes.some((n) => !n.hostId)) {
-      setError("Please select a host for each pane in the layout.");
+      setError(t("workspaces.selectHostPerPane"));
       return;
     }
 
@@ -123,7 +124,7 @@ export function WorkspaceModal() {
   const layoutMeta = getLayoutMeta(layout);
   const nodeLabels = selectedHostIds.map((hid, idx) => {
     const h = hosts.find((item) => item.id === hid);
-    return h ? h.label : `Pane ${idx + 1}`;
+    return h ? h.label : t("workspaces.paneLabel", { n: idx + 1 });
   });
 
   return (
@@ -140,10 +141,10 @@ export function WorkspaceModal() {
             </div>
             <div>
               <h2 className="text-base font-semibold text-[var(--text-primary)]">
-                {isEditing ? "Edit Workspace Preset" : "New Workspace Preset"}
+                {isEditing ? t("workspaces.editPreset") : t("workspaces.newPreset")}
               </h2>
               <p className="text-xs text-[var(--text-secondary)]">
-                Pre-configure multi-server splits and launch clusters in 1-click
+                {t("workspaces.presetHint")}
               </p>
             </div>
           </div>
@@ -167,13 +168,13 @@ export function WorkspaceModal() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-                Preset Name *
+                {t("workspaces.presetName")}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Production Cluster, Microservices Quad"
+                placeholder={t("workspaces.presetNamePlaceholder")}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--canvas)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--primary)] focus:outline-none"
                 autoFocus
               />
@@ -181,13 +182,13 @@ export function WorkspaceModal() {
 
             <div>
               <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
-                Description (optional)
+                {t("workspaces.description")}
               </label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g. 2 web nodes + 1 primary database"
+                placeholder={t("workspaces.descriptionPlaceholder")}
                 className="w-full rounded-xl border border-[var(--border)] bg-[var(--canvas)] px-3 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--primary)] focus:outline-none"
               />
             </div>
@@ -196,7 +197,7 @@ export function WorkspaceModal() {
           {/* Layout Template Selector */}
           <div>
             <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2">
-              Select Split Screen Layout
+              {t("workspaces.selectLayout")}
             </label>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {LAYOUT_OPTIONS.map((opt) => {
@@ -228,7 +229,7 @@ export function WorkspaceModal() {
                         {opt.label}
                       </div>
                       <div className="text-[10px] text-[var(--text-muted)] font-mono">
-                        {opt.panes} panes
+                        {t("workspaces.panesCount", { count: opt.panes })}
                       </div>
                     </div>
                   </button>
@@ -242,7 +243,7 @@ export function WorkspaceModal() {
             {/* Left: Interactive Diagram Preview */}
             <div className="flex flex-col gap-2">
               <label className="block text-xs font-medium text-[var(--text-secondary)]">
-                Live Layout Blueprint
+                {t("workspaces.liveBlueprint")}
               </label>
               <div className="flex flex-1 flex-col justify-center rounded-xl border border-[var(--border)] bg-[var(--canvas)]/70 p-3">
                 <LayoutBlueprint layout={layout} nodeLabels={nodeLabels} />
@@ -255,20 +256,20 @@ export function WorkspaceModal() {
             {/* Right: Host Selectors per Pane */}
             <div className="flex flex-col gap-2">
               <label className="block text-xs font-medium text-[var(--text-secondary)]">
-                Assign Hosts to Panes
+                {t("workspaces.assignHosts")}
               </label>
               <div className="flex flex-col gap-2.5">
                 {Array.from({ length: getPaneCountForLayout(layout) }).map((_, idx) => (
                   <div key={idx} className="flex flex-col gap-1">
                     <label className="text-[11px] font-mono text-[var(--text-muted)] flex items-center justify-between">
-                      <span>Pane {idx + 1} Target:</span>
+                      <span>{t("workspaces.paneTarget", { n: idx + 1 })}</span>
                     </label>
                     <CustomSelect
                       value={selectedHostIds[idx] || ""}
                       onChange={(val) => handleSelectHostForPane(idx, val)}
-                      placeholder={hosts.length === 0 ? "No hosts available" : "Select target host..."}
+                      placeholder={hosts.length === 0 ? t("workspaces.noHostsAvailable") : t("workspaces.selectTargetHost")}
                       options={[
-                        { value: "", label: "-- None / Empty Pane --" },
+                        { value: "", label: t("workspaces.emptyPane") },
                         ...hosts.map((h) => ({
                           value: h.id,
                           label: h.label,
@@ -297,12 +298,12 @@ export function WorkspaceModal() {
                   className={broadcastOnLaunch ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}
                 />
                 <span className="text-xs font-medium text-[var(--text-primary)]">
-                  Enable Interconnection (Input Broadcast) on launch
+                  {t("workspaces.enableInterconnection")}
                 </span>
               </div>
             </label>
             <p className="mt-1 ml-6 text-[11px] text-[var(--text-muted)]">
-              Automatically mirrors keystrokes across all panes when this workspace cluster launches (can be toggled anytime with Alt+B).
+              {t("workspaces.interconnectionHint")}
             </p>
           </div>
 
@@ -313,14 +314,14 @@ export function WorkspaceModal() {
               onClick={closeModal}
               className="rounded-xl border border-[var(--border)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-high)] hover:text-[var(--text-primary)] transition-colors"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               disabled={hosts.length === 0}
               className="rounded-xl bg-[var(--primary)] px-5 py-2 text-xs font-semibold text-black shadow-md hover:bg-[var(--primary)]/90 transition-all disabled:opacity-50"
             >
-              {isEditing ? "Save Changes" : "Create Preset"}
+              {isEditing ? t("workspaces.saveChanges") : t("workspaces.createPreset")}
             </button>
           </div>
         </form>

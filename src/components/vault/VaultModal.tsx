@@ -11,6 +11,7 @@ import { useTunnelStore } from "../../stores/useTunnelStore";
 import { useKnownHostsStore } from "../../stores/useKnownHostsStore";
 import { useWorkspaceStore } from "../../stores/useWorkspaceStore";
 import { api } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function VaultModal() {
   const {
@@ -52,7 +53,7 @@ export function VaultModal() {
     try {
       const success = await unlockWithBiometric();
       if (!success) {
-        setLocalError("Biometric authentication was cancelled or not recognized.");
+        setLocalError(t("vault.biometricCancelled"));
       }
     } catch (err) {
       setLocalError(String(err));
@@ -105,11 +106,11 @@ export function VaultModal() {
 
     if (!isInitialized) {
       if (password.length < 6) {
-        setLocalError("Master password must be at least 6 characters");
+        setLocalError(t("vault.passwordTooShort"));
         return;
       }
       if (password !== confirmPassword) {
-        setLocalError("Passwords do not match");
+        setLocalError(t("vault.passwordMismatch"));
         return;
       }
       setSubmitting(true);
@@ -141,15 +142,15 @@ export function VaultModal() {
 
     const cleanUrl = syncServerUrl.trim().replace(/\/+$/, "");
     if (!cleanUrl) {
-      setLocalError("Sync Server URL is required");
+      setLocalError(t("vault.syncUrlRequired"));
       return;
     }
     if (!syncPassphrase.trim()) {
-      setLocalError("Sync Passphrase is required to decrypt the sync bundle");
+      setLocalError(t("vault.syncPassphraseRequired"));
       return;
     }
     if (!syncMasterPassword) {
-      setLocalError("Master Password from original device is required");
+      setLocalError(t("vault.syncMasterRequired"));
       return;
     }
 
@@ -211,17 +212,17 @@ export function VaultModal() {
             <div>
               <h2 className="text-base font-semibold text-[var(--text-primary)]">
                 {isInitialized
-                  ? "Unlock Termimus Vault"
+                  ? t("vault.unlockVault")
                   : setupMode === "sync"
-                  ? "Sync from Existing Relay"
-                  : "Create Master Password"}
+                  ? t("vault.syncFromRelay")
+                  : t("vault.createMaster")}
               </h2>
               <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 {isInitialized
-                  ? "Enter your master password to decrypt your credentials."
+                  ? t("vault.unlockVaultHint")
                   : setupMode === "sync"
-                  ? "Connect to your self-hosted relay to restore your vault and credentials."
-                  : "Your master password protects all SSH keys and secrets with zero-knowledge AES-256."}
+                  ? t("vault.syncRelayHint")
+                  : t("vault.createMasterHint")}
               </p>
             </div>
           </div>
@@ -229,7 +230,7 @@ export function VaultModal() {
             <button
               type="button"
               onClick={closeUnlockPrompt}
-              title="Cancel (vault stays locked)"
+              title={t("vault.cancelStaysLocked")}
               className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--surface-high)] hover:text-white transition-colors shrink-0"
             >
               <X size={18} />
@@ -253,7 +254,7 @@ export function VaultModal() {
               }`}
             >
               <ShieldCheck size={13} />
-              <span>Create New Vault</span>
+              <span>{t("vault.createNewVault")}</span>
             </button>
             <button
               type="button"
@@ -268,7 +269,7 @@ export function VaultModal() {
               }`}
             >
               <Cloud size={13} />
-              <span>Restore from Sync</span>
+              <span>{t("vault.restoreFromSync")}</span>
             </button>
           </div>
         )}
@@ -291,13 +292,13 @@ export function VaultModal() {
                   className="w-full flex items-center justify-center gap-2.5 rounded-xl border border-[var(--primary)]/30 bg-[var(--primary)]/10 hover:bg-[var(--primary)]/18 text-[var(--primary)] py-2.5 px-4 text-sm font-semibold transition shadow-sm hover:shadow active:scale-[0.99] disabled:opacity-50 cursor-pointer"
                 >
                   <Fingerprint size={18} className={biometricUnlocking ? "animate-pulse" : ""} />
-                  <span>{biometricUnlocking ? "Waiting for Touch ID..." : "Unlock with Touch ID"}</span>
+                  <span>{biometricUnlocking ? t("vault.waitingTouchId") : t("vault.unlockTouchId")}</span>
                 </button>
 
                 <div className="flex items-center gap-3">
                   <div className="h-px flex-1 bg-[var(--border)]" />
                   <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-medium">
-                    or enter master password
+                    {t("vault.orEnterMaster")}
                   </span>
                   <div className="h-px flex-1 bg-[var(--border)]" />
                 </div>
@@ -306,7 +307,7 @@ export function VaultModal() {
 
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                Master Password
+                {t("vault.masterPassword")}
               </label>
               <div className="relative">
                 <input
@@ -315,7 +316,7 @@ export function VaultModal() {
                   autoComplete="off"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password..."
+                  placeholder={t("vault.enterPassword")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 pl-9 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--accent)] focus:outline-none"
                 />
                 <KeyRound
@@ -328,7 +329,7 @@ export function VaultModal() {
             {!isInitialized && (
               <div>
                 <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                  Confirm Master Password
+                  {t("vault.confirmMasterPassword")}
                 </label>
                 <div className="relative">
                   <input
@@ -336,7 +337,7 @@ export function VaultModal() {
                     autoComplete="off"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat password..."
+                    placeholder={t("vault.repeatPassword")}
                     className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 pl-9 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--accent)] focus:outline-none"
                   />
                   <KeyRound
@@ -353,10 +354,10 @@ export function VaultModal() {
               className="w-full rounded-lg bg-[var(--accent)] py-2 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
             >
               {submitting
-                ? "Verifying..."
+                ? t("vault.verifying")
                 : isInitialized
-                ? "Unlock Vault"
-                : "Create Vault"}
+                ? t("vault.unlockVault")
+                : t("vault.createVault")}
             </button>
 
             {isInitialized && (
@@ -365,10 +366,9 @@ export function VaultModal() {
                   type="button"
                   onClick={() => {
                     useConfirmStore.getState().confirm({
-                      title: "Reset Master Password & Vault?",
-                      message:
-                        "Forgot your master password? You can reset the vault to start fresh. WARNING: All stored credentials, passwords, and SSH keys will be permanently deleted.",
-                      confirmLabel: "Reset Vault",
+                      title: t("vault.resetVaultTitle"),
+                      message: t("vault.resetVaultMessage"),
+                      confirmLabel: t("vault.resetVault"),
                       isDanger: true,
                       onConfirm: async () => {
                         await api.resetVault();
@@ -378,7 +378,7 @@ export function VaultModal() {
                   }}
                   className="text-[11px] text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors underline"
                 >
-                  Forgot Master Password? Reset Vault
+                  {t("vault.forgotPassword")}
                 </button>
               </div>
             )}
@@ -390,7 +390,7 @@ export function VaultModal() {
           <form onSubmit={handleSyncSubmit} className="space-y-3.5">
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                Sync Server URL *
+                {t("vault.syncServerUrl")}
               </label>
               <div className="relative">
                 <input
@@ -410,7 +410,7 @@ export function VaultModal() {
 
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                Auth Token (If configured on server)
+                {t("vault.authToken")}
               </label>
               <div className="relative">
                 <input
@@ -429,13 +429,13 @@ export function VaultModal() {
                 </button>
               </div>
               <p className="text-[10px] text-[var(--text-muted)] mt-1">
-                Leave blank if your relay runs in open mode without a token.
+                {t("vault.authTokenHint")}
               </p>
             </div>
 
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                Sync Passphrase (E2E Encryption) *
+                {t("vault.syncPassphrase")}
               </label>
               <div className="relative">
                 <input
@@ -443,7 +443,7 @@ export function VaultModal() {
                   autoComplete="off"
                   value={syncPassphrase}
                   onChange={(e) => setSyncPassphrase(e.target.value)}
-                  placeholder="Passphrase used to encrypt the backup..."
+                  placeholder={t("vault.syncPassphrasePlaceholder")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-9 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
                 />
                 <button
@@ -455,13 +455,13 @@ export function VaultModal() {
                 </button>
               </div>
               <p className="text-[10px] text-[var(--text-muted)] mt-1">
-                Decrypts the snapshot bundle sent by your primary device.
+                {t("vault.syncPassphraseHint")}
               </p>
             </div>
 
             <div>
               <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
-                Master Password (from Primary Device) *
+                {t("vault.syncMasterLabel")}
               </label>
               <div className="relative">
                 <input
@@ -469,7 +469,7 @@ export function VaultModal() {
                   autoComplete="off"
                   value={syncMasterPassword}
                   onChange={(e) => setSyncMasterPassword(e.target.value)}
-                  placeholder="Enter original vault password..."
+                  placeholder={t("vault.syncMasterPlaceholder")}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 pl-9 pr-9 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--primary)] focus:outline-none"
                 />
                 <KeyRound
@@ -485,7 +485,7 @@ export function VaultModal() {
                 </button>
               </div>
               <p className="text-[10px] text-[var(--text-muted)] mt-1">
-                Unlocks the restored vault and decrypts your SSH keys.
+                {t("vault.syncMasterHint")}
               </p>
             </div>
 
@@ -495,7 +495,7 @@ export function VaultModal() {
               className="w-full rounded-lg bg-[var(--primary)] py-2 text-xs font-semibold text-[var(--on-primary)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50 flex items-center justify-center gap-1.5"
             >
               <Cloud size={14} />
-              <span>{submitting ? "Connecting & Restoring..." : "Restore & Unlock Vault"}</span>
+              <span>{submitting ? t("vault.connectingRestoring") : t("vault.restoreUnlock")}</span>
             </button>
           </form>
         )}

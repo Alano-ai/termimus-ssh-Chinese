@@ -15,23 +15,27 @@ import { TransferConflictModal } from "./TransferConflictModal";
 import { TransferProgressOverlay } from "./TransferProgressOverlay";
 import { FileEntry } from "../../lib/api";
 import { CustomSelect } from "../ui/CustomSelect";
+import { t } from "../../i18n";
 
 function transferButtonTitle(files: FileEntry[], verb: "Upload" | "Download"): string {
+  const isUpload = verb === "Upload";
+  const verbLabel = isUpload ? t("sftp.upload") : t("sftp.download");
+  const side = isUpload ? t("sftp.local") : t("sftp.remote");
   if (files.length === 0) {
-    return `Select ${verb === "Upload" ? "local" : "remote"} items to ${verb.toLowerCase()}`;
+    return t("sftp.selectItemsToTransfer", { side, verb: verbLabel });
   }
   if (files.length === 1) {
     const first = files[0];
     return first.is_dir
-      ? `${verb} folder "${first.name}" (recursive)`
-      : `${verb} "${first.name}"`;
+      ? t("sftp.transferFolder", { verb: verbLabel, name: first.name })
+      : t("sftp.transferFile", { verb: verbLabel, name: first.name });
   }
   const dirCount = files.filter((f) => f.is_dir).length;
   const fileCount = files.length - dirCount;
   const parts: string[] = [];
-  if (fileCount > 0) parts.push(`${fileCount} file${fileCount > 1 ? "s" : ""}`);
-  if (dirCount > 0) parts.push(`${dirCount} folder${dirCount > 1 ? "s" : ""}`);
-  return `${verb} ${parts.join(" & ")} (folders recursive)`;
+  if (fileCount > 0) parts.push(t("sftp.fileUnit", { count: fileCount }));
+  if (dirCount > 0) parts.push(t("sftp.folderUnit", { count: dirCount }));
+  return t("sftp.transferParts", { verb: verbLabel, parts: parts.join(" & ") });
 }
 
 export function SftpView() {
@@ -178,7 +182,7 @@ export function SftpView() {
           <div className="flex items-center gap-2">
             <Server size={16} className="text-[var(--accent)]" />
             <span className="text-xs font-semibold text-[var(--text-primary)]">
-              Remote Server:
+              {t("sftp.remoteServer")}
             </span>
           </div>
           <div className="w-64 sm:w-80">
@@ -186,10 +190,10 @@ export function SftpView() {
               value={remoteHost?.id ?? ""}
               onChange={handleConnectHost}
               disabled={remoteLoading || transferring}
-              placeholder="Select a host to connect..."
+              placeholder={t("sftp.selectHostPlaceholder")}
               searchable
               options={[
-                { value: "", label: "Select a host to connect..." },
+                { value: "", label: t("sftp.selectHostPlaceholder") },
                 ...hosts.map((h) => ({
                   value: h.id,
                   label: h.label,
@@ -202,10 +206,10 @@ export function SftpView() {
           {remoteSessionId && (
             <button
               onClick={disconnectRemote}
-              title="Disconnect SFTP"
+              title={t("sftp.disconnectSftp")}
               className="flex items-center gap-1 rounded bg-[var(--border)] px-2 py-1 text-[11px] text-[var(--text-muted)] hover:text-white"
             >
-              <Unplug size={12} /> Disconnect
+              <Unplug size={12} /> {t("sftp.disconnect")}
             </button>
           )}
         </div>
@@ -223,7 +227,7 @@ export function SftpView() {
       <div className="flex min-h-0 flex-1 gap-2 overflow-hidden">
         {/* Left Pane: Local Files */}
         <FilePane
-          title="Local Machine"
+          title={t("sftp.localMachine")}
           subtitle={localPath}
           path={localPath}
           entries={localEntries}
@@ -238,6 +242,7 @@ export function SftpView() {
           onDeleteItems={deleteLocalItems}
           onRefresh={refreshLocal}
           onOpenFile={openLocalFile}
+          isLocalPane
           onTransfer={transferLocal}
         />
 
@@ -268,11 +273,11 @@ export function SftpView() {
 
         {/* Right Pane: Remote Server Files */}
         <FilePane
-          title={remoteHost ? remoteHost.label : "Remote Server"}
+          title={remoteHost ? remoteHost.label : t("sftp.remoteServer")}
           subtitle={
             remoteHost
               ? `${remoteHost.username}@${remoteHost.address}`
-              : "No connection"
+              : t("sftp.noConnection")
           }
           path={remotePath}
           entries={remoteEntries}

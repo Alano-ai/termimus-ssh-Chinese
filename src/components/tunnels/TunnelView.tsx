@@ -18,6 +18,7 @@ import { useHostStore } from "../../stores/useHostStore";
 import { useConfirmStore } from "../../stores/useConfirmStore";
 import { TunnelModal } from "./TunnelModal";
 import { PortForwardRule, Host } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function TunnelView() {
   const {
@@ -90,9 +91,9 @@ export function TunnelView() {
   const handleDelete = useCallback(
     (ruleId: string, ruleLabel?: string) => {
       useConfirmStore.getState().confirm({
-        title: "Delete Port Forwarding Rule",
-        message: `Are you sure you want to delete ${ruleLabel ? `"${ruleLabel}"` : "this tunnel rule"}? This action cannot be undone.`,
-        confirmLabel: "Delete Rule",
+        title: t("tunnels.deleteRuleTitle"),
+        message: t("tunnels.deleteRuleMessage", { subject: ruleLabel ? `"${ruleLabel}"` : t("tunnels.thisRule") }),
+        confirmLabel: t("tunnels.deleteRule"),
         isDanger: true,
         onConfirm: async () => {
           await deleteRule(ruleId);
@@ -114,17 +115,17 @@ export function TunnelView() {
         <div>
           <h2 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <ArrowLeftRight size={18} className="text-[var(--accent)]" />
-            Port Forwarding / SSH Tunnels
+            {t("tunnels.title")}
           </h2>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
-            Forward local ports through secure SSH tunnels to remote services.
+            {t("tunnels.hint")}
           </p>
         </div>
         <button
           onClick={openCreateModal}
           className="flex items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)]"
         >
-          <Plus size={14} /> New Tunnel
+          <Plus size={14} /> {t("tunnels.newTunnel")}
         </button>
       </div>
 
@@ -140,20 +141,20 @@ export function TunnelView() {
         {isLoading && rules.length === 0 ? (
           <div className="flex h-40 items-center justify-center text-xs text-[var(--text-muted)]">
             <Loader2 size={16} className="animate-spin mr-2 text-[var(--accent)]" />
-            Loading rules...
+            {t("tunnels.loadingRules")}
           </div>
         ) : rules.length === 0 ? (
           <div className="flex h-60 flex-col items-center justify-center text-center text-[var(--text-muted)]">
             <ArrowLeftRight size={38} className="mb-2 opacity-30" />
-            <p className="text-sm font-medium">No port forwarding rules yet</p>
+            <p className="text-sm font-medium">{t("tunnels.noRules")}</p>
             <p className="text-xs mt-1 max-w-sm">
-              Create a rule to access remote databases, APIs, or web servers via localhost.
+              {t("tunnels.noRulesHint")}
             </p>
             <button
               onClick={openCreateModal}
               className="mt-4 rounded-md border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs text-[var(--text-primary)] hover:bg-[var(--border)]"
             >
-              Add First Rule
+              {t("tunnels.addFirstRule")}
             </button>
           </div>
         ) : (
@@ -201,12 +202,12 @@ export function TunnelView() {
                 {activeRuleIds.has(contextMenu.rule.id) ? (
                   <>
                     <Square size={13} />
-                    <span>Stop Tunnel</span>
+                    <span>{t("tunnels.stopTunnel")}</span>
                   </>
                 ) : (
                   <>
                     <Play size={13} />
-                    <span>Start Tunnel</span>
+                    <span>{t("tunnels.startTunnel")}</span>
                   </>
                 )}
               </button>
@@ -219,13 +220,13 @@ export function TunnelView() {
                   await navigator.clipboard.writeText(
                     `${contextMenu.rule!.local_address}:${contextMenu.rule!.local_port}`
                   );
-                  showCopyToast("Copied local address");
+                  showCopyToast(t("tunnels.copiedLocalAddress"));
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Copy Local Address</span>
+                <span>{t("tunnels.copyLocalAddress")}</span>
               </button>
 
               {/* Copy Remote Address */}
@@ -234,13 +235,13 @@ export function TunnelView() {
                   await navigator.clipboard.writeText(
                     `${contextMenu.rule!.remote_address}:${contextMenu.rule!.remote_port}`
                   );
-                  showCopyToast("Copied remote address");
+                  showCopyToast(t("tunnels.copiedRemoteAddress"));
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Copy Remote Address</span>
+                <span>{t("tunnels.copyRemoteAddress")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -255,7 +256,7 @@ export function TunnelView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <Pencil size={13} />
-                <span>Edit Rule</span>
+                <span>{t("tunnels.editRule")}</span>
               </button>
 
               {/* Delete */}
@@ -268,7 +269,7 @@ export function TunnelView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--danger)] hover:text-white transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <Trash2 size={13} />
-                <span>Delete Rule</span>
+                <span>{t("tunnels.deleteRule")}</span>
               </button>
             </>
           ) : (
@@ -282,7 +283,7 @@ export function TunnelView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Plus size={13} />
-                <span>New Port Forward Rule</span>
+                <span>{t("tunnels.newPortForwardRule")}</span>
               </button>
 
               <button
@@ -293,7 +294,7 @@ export function TunnelView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <RefreshCw size={13} />
-                <span>Refresh Rules</span>
+                <span>{t("tunnels.refreshRules")}</span>
               </button>
             </>
           )}
@@ -363,7 +364,7 @@ const TunnelCard = memo(function TunnelCard({
           <button
             onClick={() => onEdit(rule)}
             disabled={isActive}
-            title="Edit rule"
+            title={t("tunnels.editRuleTitle")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white disabled:opacity-30"
           >
             <Pencil size={13} />
@@ -371,7 +372,7 @@ const TunnelCard = memo(function TunnelCard({
           <button
             onClick={() => onDelete(rule.id, rule.label)}
             disabled={isActive}
-            title="Delete rule"
+            title={t("tunnels.deleteRule")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--danger)]/20 hover:text-[var(--danger)] disabled:opacity-30 transition"
           >
             <Trash2 size={13} />
@@ -382,13 +383,13 @@ const TunnelCard = memo(function TunnelCard({
       {/* Endpoint Routing Diagram */}
       <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-2.5 text-xs mb-3 space-y-1 font-mono">
         <div className="flex items-center justify-between text-[var(--text-muted)]">
-          <span>Local:</span>
+          <span>{t("tunnels.local")}</span>
           <span className="text-[var(--accent)] font-semibold">
             {rule.local_address}:{rule.local_port}
           </span>
         </div>
         <div className="flex items-center justify-between text-[var(--text-muted)]">
-          <span>Target:</span>
+          <span>{t("tunnels.target")}</span>
           <span className="text-[var(--text-primary)]">
             {rule.remote_address}:{rule.remote_port}
           </span>
@@ -399,7 +400,7 @@ const TunnelCard = memo(function TunnelCard({
       <div className="flex min-w-0 items-center gap-1.5 text-xs text-[var(--text-muted)] mb-4">
         <Server size={12} className="shrink-0" />
         <span className="truncate">
-          via {host ? host.label : "Unknown host"}
+          {t("tunnels.via", { host: host ? host.label : t("common.unknown") })}
         </span>
       </div>
 
@@ -417,17 +418,17 @@ const TunnelCard = memo(function TunnelCard({
           {isBusy ? (
             <>
               <Loader2 size={13} className="animate-spin" />
-              <span>{isActive ? "Stopping..." : "Starting..."}</span>
+              <span>{isActive ? t("tunnels.stopping") : t("tunnels.starting")}</span>
             </>
           ) : isActive ? (
             <>
               <Square size={13} />
-              <span>Stop Tunnel</span>
+              <span>{t("tunnels.stopTunnel")}</span>
             </>
           ) : (
             <>
               <Play size={13} />
-              <span>Start Tunnel</span>
+              <span>{t("tunnels.startTunnel")}</span>
             </>
           )}
         </button>

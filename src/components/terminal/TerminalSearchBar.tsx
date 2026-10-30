@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, ChevronUp, ChevronDown, X } from "lucide-react";
 import type { SearchAddon } from "@xterm/addon-search";
+import { t } from "../../i18n";
 
 interface TerminalSearchBarProps {
   searchAddon: SearchAddon | null;
@@ -38,7 +39,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
     return () => {
       try {
         disposable.dispose();
-      } catch {}
+      } catch { /* ignore */ }
     };
   }, [searchAddon]);
 
@@ -118,7 +119,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
           type="text"
           value={query}
           onChange={(e) => handleQueryChange(e.target.value)}
-          placeholder="Find in terminal..."
+          placeholder={t("term.findInTerminal")}
           className="w-36 sm:w-48 bg-transparent text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none font-mono"
         />
 
@@ -132,8 +133,8 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
             }`}
           >
             {resultCount === 0
-              ? "0 matches"
-              : `${resultIndex >= 0 ? resultIndex + 1 : 0} of ${resultCount}`}
+              ? t("term.zeroMatches")
+              : t("term.matchCount", { index: resultIndex >= 0 ? resultIndex + 1 : 0, count: resultCount })}
           </span>
         )}
       </div>
@@ -143,7 +144,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
         type="button"
         onClick={handlePrev}
         disabled={!query || resultCount === 0}
-        title="Previous match (Shift+Enter)"
+        title={t("term.prevMatch")}
         className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-high)] hover:text-white disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
       >
         <ChevronUp size={14} />
@@ -153,7 +154,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
         type="button"
         onClick={handleNext}
         disabled={!query || resultCount === 0}
-        title="Next match (Enter)"
+        title={t("term.nextMatch")}
         className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-high)] hover:text-white disabled:opacity-30 disabled:pointer-events-none transition cursor-pointer"
       >
         <ChevronDown size={14} />
@@ -169,7 +170,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
             setCaseSensitive(next);
             if (query) executeSearch("next", query);
           }}
-          title="Match Case"
+          title={t("term.matchCase")}
           className={`flex h-6 px-1.5 items-center justify-center rounded text-[11px] font-mono transition cursor-pointer ${
             caseSensitive
               ? "bg-[var(--primary)]/20 text-[var(--primary)] font-bold border border-[var(--primary)]/40"
@@ -187,7 +188,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
             setWholeWord(next);
             if (query) executeSearch("next", query);
           }}
-          title="Match Whole Word"
+          title={t("term.matchWholeWord")}
           className={`flex h-6 px-1.5 items-center justify-center rounded text-[11px] font-mono transition cursor-pointer ${
             wholeWord
               ? "bg-[var(--primary)]/20 text-[var(--primary)] font-bold border border-[var(--primary)]/40"
@@ -205,7 +206,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
             setRegex(next);
             if (query) executeSearch("next", query);
           }}
-          title="Use Regular Expression"
+          title={t("term.useRegex")}
           className={`flex h-6 px-1.5 items-center justify-center rounded text-[11px] font-mono transition cursor-pointer ${
             regex
               ? "bg-[var(--primary)]/20 text-[var(--primary)] font-bold border border-[var(--primary)]/40"
@@ -220,7 +221,7 @@ export function TerminalSearchBar({ searchAddon, onClose }: TerminalSearchBarPro
       <button
         type="button"
         onClick={onClose}
-        title="Close (Escape)"
+        title={t("term.closeEscape")}
         className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-[var(--surface-high)] hover:text-white transition cursor-pointer ml-0.5"
       >
         <X size={14} />

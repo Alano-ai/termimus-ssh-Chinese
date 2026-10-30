@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Terminal, Lock, Eye, EyeOff } from "lucide-react";
 import { useSnippetStore } from "../../stores/useSnippetStore";
 import { SnippetInput } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function SnippetModal() {
   const { isModalOpen, editingSnippet, closeModal, saveSnippet } = useSnippetStore();
@@ -40,11 +41,11 @@ export function SnippetModal() {
     setError(null);
 
     if (!title.trim()) {
-      setError("Title is required");
+      setError(t("snippets.titleRequired"));
       return;
     }
     if (!command.trim()) {
-      setError("Command script is required");
+      setError(t("snippets.commandRequired"));
       return;
     }
 
@@ -81,7 +82,7 @@ export function SnippetModal() {
           <div className="flex items-center gap-2">
             <Terminal size={18} className="text-[var(--accent)]" />
             <h2 className="text-base font-semibold text-[var(--text-primary)]">
-              {editingSnippet ? "Edit Snippet" : "New Snippet"}
+              {editingSnippet ? t("snippets.editSnippet") : t("snippets.newSnippet")}
             </h2>
           </div>
           <button
@@ -102,7 +103,7 @@ export function SnippetModal() {
           {/* Snippet Type Selector: Standard vs Secret */}
           <div>
             <label className="mb-1.5 block font-medium text-[var(--text-muted)]">
-              Snippet Type
+              {t("snippets.type")}
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -119,8 +120,8 @@ export function SnippetModal() {
               >
                 <Terminal size={16} className={!isSecret ? "text-[var(--primary)]" : "text-[var(--text-muted)]"} />
                 <div>
-                  <p className="font-semibold text-xs leading-none">Standard</p>
-                  <p className="text-[10px] text-[var(--text-muted)] mt-1">Normal command / script</p>
+                  <p className="font-semibold text-xs leading-none">{t("snippets.standard")}</p>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1">{t("snippets.standardHint")}</p>
                 </div>
               </button>
 
@@ -138,8 +139,8 @@ export function SnippetModal() {
               >
                 <Lock size={16} className={isSecret ? "text-[var(--warning)]" : "text-[var(--text-muted)]"} />
                 <div>
-                  <p className="font-semibold text-xs leading-none">Secret / Password</p>
-                  <p className="text-[10px] text-[var(--text-muted)] mt-1">Masked with eye toggle (••••)</p>
+                  <p className="font-semibold text-xs leading-none">{t("snippets.secret")}</p>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1">{t("snippets.secretHint")}</p>
                 </div>
               </button>
             </div>
@@ -147,14 +148,14 @@ export function SnippetModal() {
 
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Snippet Title *
+              {t("snippets.title")}
             </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Sudo Root Auth, Docker Restart, Database Migration"
+              placeholder={t("snippets.titlePlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--accent)] focus:outline-none"
             />
           </div>
@@ -162,7 +163,7 @@ export function SnippetModal() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="font-medium text-[var(--text-muted)]">
-                {isSecret ? "Secret Command / Password *" : "Command / Script *"}
+                {isSecret ? t("snippets.secretCommand") : t("snippets.commandScript")}
               </label>
               {isSecret && (
                 <button
@@ -171,7 +172,7 @@ export function SnippetModal() {
                   className="flex items-center gap-1 text-[11px] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   {showCommandText ? <EyeOff size={13} /> : <Eye size={13} />}
-                  <span>{showCommandText ? "Hide text" : "Reveal text"}</span>
+                  <span>{showCommandText ? t("snippets.hideText") : t("snippets.revealText")}</span>
                 </button>
               )}
             </div>
@@ -182,8 +183,8 @@ export function SnippetModal() {
               onChange={(e) => setCommand(e.target.value)}
               placeholder={
                 isSecret
-                  ? "Enter password, secret token, or sensitive command..."
-                  : "e.g.\nsudo apt update && sudo apt upgrade -y\ndocker compose down && docker compose up -d"
+                  ? t("snippets.secretPlaceholder")
+                  : t("snippets.commandPlaceholder")
               }
               style={
                 {
@@ -194,20 +195,20 @@ export function SnippetModal() {
             />
             {isSecret && (
               <p className="mt-1 text-[10px] text-[var(--text-muted)]">
-                Secret snippet text is masked by default in the UI. Click the eye button to reveal.
+                {t("snippets.maskedHint")}
               </p>
             )}
           </div>
 
           <div>
             <label className="mb-1 block font-medium text-[var(--text-muted)]">
-              Tags (comma separated)
+              {t("hosts.tagsCommaSeparated")}
             </label>
             <input
               type="text"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
-              placeholder="docker, sysadmin, ubuntu, maintenance"
+              placeholder={t("snippets.tagsPlaceholder")}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50 focus:border-[var(--accent)] focus:outline-none"
             />
           </div>
@@ -218,14 +219,14 @@ export function SnippetModal() {
               onClick={closeModal}
               className="rounded-md px-4 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:opacity-50"
             >
-              {submitting ? "Saving..." : editingSnippet ? "Update Snippet" : "Save Snippet"}
+              {submitting ? t("common.saving") : editingSnippet ? t("snippets.updateSnippet") : t("snippets.saveSnippet")}
             </button>
           </div>
         </form>

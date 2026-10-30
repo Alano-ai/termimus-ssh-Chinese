@@ -20,6 +20,7 @@ import { useSnippetStore } from "../../stores/useSnippetStore";
 import { useSessionStore } from "../../stores/useSessionStore";
 import { useConfirmStore } from "../../stores/useConfirmStore";
 import { Snippet } from "../../lib/api";
+import { t } from "../../i18n";
 
 export function SnippetView() {
   const {
@@ -120,9 +121,9 @@ export function SnippetView() {
   const handleDelete = useCallback(
     (id: string, snippetTitle?: string) => {
       useConfirmStore.getState().confirm({
-        title: "Delete Snippet",
-        message: `Are you sure you want to delete ${snippetTitle ? `"${snippetTitle}"` : "this snippet"}? This action cannot be undone.`,
-        confirmLabel: "Delete Snippet",
+        title: t("snippets.deleteSnippet"),
+        message: t("snippets.deleteMessage", { subject: snippetTitle ? `"${snippetTitle}"` : t("snippets.thisSnippet") }),
+        confirmLabel: t("snippets.deleteSnippet"),
         isDanger: true,
         onConfirm: async () => {
           await deleteSnippet(id);
@@ -142,19 +143,19 @@ export function SnippetView() {
         <div>
           <h2 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <Terminal size={18} className="text-[var(--accent)]" />
-            Snippets Library
+            {t("snippets.library")}
           </h2>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
             {hasActiveTerminal
-              ? `Commands run into: ${activeTab?.hostLabel}`
-              : "Open an active terminal session to run snippets"}
+              ? t("snippets.runInto", { host: activeTab?.hostLabel ?? "" })
+              : t("snippets.openTerminalHint")}
           </p>
         </div>
         <button
           onClick={openCreateModal}
           className="flex items-center gap-1.5 rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[var(--accent-hover)]"
         >
-          <Plus size={14} /> New Snippet
+          <Plus size={14} /> {t("snippets.newSnippet")}
         </button>
       </div>
 
@@ -165,7 +166,7 @@ export function SnippetView() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search snippets by title, command, or tag..."
+          placeholder={t("snippets.searchPlaceholder")}
           className="w-full rounded-md border border-[var(--border)] bg-[var(--card)] pl-9 pr-3 py-2 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none"
         />
       </div>
@@ -180,7 +181,7 @@ export function SnippetView() {
       {!hasActiveTerminal && (
         <div className="mb-4 flex items-center gap-2 rounded-md border border-[var(--warning)]/30 bg-[var(--warning)]/10 px-3 py-2 text-xs text-[var(--warning)]">
           <AlertCircle size={14} className="shrink-0" />
-          <span>No connected terminal session. Open one from the Hosts tab to run snippets.</span>
+          <span>{t("snippets.noTerminalHint")}</span>
         </div>
       )}
 
@@ -189,24 +190,24 @@ export function SnippetView() {
         {isLoading && snippets.length === 0 ? (
           <div className="flex h-40 items-center justify-center text-xs text-[var(--text-muted)]">
             <Loader2 size={16} className="animate-spin mr-2 text-[var(--accent)]" />
-            Loading snippets...
+            {t("snippets.loading")}
           </div>
         ) : filteredSnippets.length === 0 ? (
           <div className="flex h-60 flex-col items-center justify-center text-center text-[var(--text-muted)]">
             <Terminal size={38} className="mb-2 opacity-30" />
             <p className="text-sm font-medium">
-              {snippets.length === 0 ? "No snippets yet" : "No snippets match your search"}
+              {snippets.length === 0 ? t("snippets.noSnippets") : t("snippets.noMatch")}
             </p>
             {snippets.length === 0 && (
               <>
                 <p className="text-xs mt-1 max-w-sm">
-                  Save your favorite commands and run them instantly on any connected server.
+                  {t("snippets.noSnippetsHint")}
                 </p>
                 <button
                   onClick={openCreateModal}
                   className="mt-4 rounded-md border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs text-[var(--text-primary)] hover:bg-[var(--border)]"
                 >
-                  Add First Snippet
+                  {t("snippets.addFirst")}
                 </button>
               </>
             )}
@@ -248,7 +249,7 @@ export function SnippetView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <Play size={13} />
-                <span>Run in Active Terminal</span>
+                <span>{t("snippets.runInTerminal")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -257,13 +258,13 @@ export function SnippetView() {
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(contextMenu.snippet!.command);
-                  showCopyToast("Copied command");
+                  showCopyToast(t("snippets.copiedCommand"));
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>Copy Command</span>
+                <span>{t("snippets.copyCommand")}</span>
               </button>
 
               {/* Edit Snippet */}
@@ -275,7 +276,7 @@ export function SnippetView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Pencil size={13} />
-                <span>Edit Snippet</span>
+                <span>{t("snippets.editSnippet")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -289,7 +290,7 @@ export function SnippetView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--danger)] hover:text-white transition-colors group"
               >
                 <Trash2 size={13} />
-                <span>Delete Snippet</span>
+                <span>{t("snippets.deleteSnippet")}</span>
               </button>
             </>
           ) : (
@@ -303,7 +304,7 @@ export function SnippetView() {
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group"
               >
                 <Plus size={13} />
-                <span>New Snippet</span>
+                <span>{t("snippets.newSnippet")}</span>
               </button>
             </>
           )}
@@ -371,11 +372,11 @@ const SnippetCard = memo(function SnippetCard({
           </h3>
           {isSecret && (
             <span
-              title="Secret snippet: command text is masked by default"
+              title={t("snippets.secretTitle")}
               className="flex items-center gap-1 rounded bg-[var(--warning)]/15 border border-[var(--warning)]/30 px-1.5 py-0.5 text-[9px] font-mono text-[var(--warning)] font-semibold shrink-0"
             >
               <Lock size={9} />
-              <span>SECRET</span>
+              <span>{t("snippets.secretBadge")}</span>
             </span>
           )}
         </div>
@@ -383,7 +384,7 @@ const SnippetCard = memo(function SnippetCard({
           {isSecret && (
             <button
               onClick={() => setIsRevealed((prev) => !prev)}
-              title={isRevealed ? "Hide secret command" : "Reveal secret command"}
+              title={isRevealed ? t("snippets.hideSecretCommand") : t("snippets.revealSecretCommand")}
               className={`rounded p-1 transition-colors ${
                 isRevealed
                   ? "text-[var(--warning)] bg-[var(--warning)]/15"
@@ -395,21 +396,21 @@ const SnippetCard = memo(function SnippetCard({
           )}
           <button
             onClick={handleCopy}
-            title={isCopied ? "Copied!" : "Copy command"}
+            title={isCopied ? t("common.copied") : t("snippets.copyCommandTitle")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white transition-colors"
           >
             {isCopied ? <Check size={13} className="text-[var(--success)]" /> : <Copy size={13} />}
           </button>
           <button
             onClick={() => onEdit(snippet)}
-            title="Edit snippet"
+            title={t("snippets.editSnippetTitle")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white"
           >
             <Pencil size={13} />
           </button>
           <button
             onClick={() => onDelete(snippet.id, snippet.title)}
-            title="Delete snippet"
+            title={t("snippets.deleteSnippetTitle")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--danger)]/20 hover:text-[var(--danger)] transition"
           >
             <Trash2 size={13} />
@@ -454,12 +455,12 @@ const SnippetCard = memo(function SnippetCard({
         {isRunSuccess ? (
           <>
             <CheckCircle2 size={13} />
-            <span>Sent to terminal</span>
+            <span>{t("snippets.sentToTerminal")}</span>
           </>
         ) : (
           <>
             <Play size={12} />
-            <span>Run in Active Terminal</span>
+            <span>{t("snippets.runInTerminal")}</span>
           </>
         )}
       </button>

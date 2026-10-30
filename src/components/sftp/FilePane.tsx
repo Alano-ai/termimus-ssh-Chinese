@@ -20,6 +20,7 @@ import { FileEntry } from "../../lib/api";
 import { formatBytes, formatDate, parentPath } from "../../lib/format";
 import { useConfirmStore } from "../../stores/useConfirmStore";
 import { SelectMods } from "../../stores/useSftpStore";
+import { t } from "../../i18n";
 
 interface FilePaneProps {
   title: string;
@@ -39,6 +40,7 @@ interface FilePaneProps {
   onRefresh: () => void;
   onOpenFile?: (entry: FileEntry) => void;
   disabled?: boolean;
+  isLocalPane?: boolean;
   onTransfer?: (entries: FileEntry[]) => void;
 }
 
@@ -72,7 +74,7 @@ function SortHeaderCell({
     <div
       role="columnheader"
       aria-sort={isActive ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
-      title={`Sort by ${label.toLowerCase()}`}
+      title={t("sftp.sortBy", { label })}
       onClick={() => onSort(columnKey)}
       className={`cursor-pointer select-none transition-colors hover:text-[var(--text-primary)] ${
         className ?? ""
@@ -108,6 +110,7 @@ export const FilePane = memo(function FilePane({
   onRefresh,
   onOpenFile,
   disabled = false,
+  isLocalPane = false,
   onTransfer,
 }: FilePaneProps) {
   const [newFolderName, setNewFolderName] = useState("");
@@ -298,17 +301,17 @@ export const FilePane = memo(function FilePane({
       e.stopPropagation();
       const single = targets.length === 1;
       const first = targets[0];
-      const subject = single ? `"${first.name}"` : `${targets.length} selected items`;
+      const subject = single ? `"${first.name}"` : t("sftp.selectedItems", { count: targets.length });
       useConfirmStore.getState().confirm({
         title: single
           ? first.is_dir
-            ? "Delete Folder"
-            : "Delete File"
-          : `Delete ${targets.length} Items`,
-        message: `Are you sure you want to delete ${subject}${
-          single && first.is_dir ? " and everything inside it" : ""
-        }? This action cannot be undone.`,
-        confirmLabel: "Delete",
+            ? t("sftp.deleteFolder")
+            : t("sftp.deleteFile")
+          : t("sftp.deleteItems", { count: targets.length }),
+        message: single && first.is_dir
+          ? t("sftp.deleteFolderConfirm", { subject })
+          : t("sftp.deleteConfirm", { subject }),
+        confirmLabel: t("common.delete"),
         isDanger: true,
         onConfirm: async () => {
           await onDeleteItems(targets);
@@ -354,12 +357,13 @@ export const FilePane = memo(function FilePane({
         : [contextMenu.entry]
       : [];
   const multiMenu = menuTargets.length > 1;
-  const isLocalPane = title === "Local Machine";
   const transferLabel = multiMenu
-    ? `${isLocalPane ? "Upload" : "Download"} ${menuTargets.length} Selected`
+    ? (isLocalPane
+        ? t("sftp.uploadNSelected", { count: menuTargets.length })
+        : t("sftp.downloadNSelected", { count: menuTargets.length }))
     : isLocalPane
-      ? "Upload to Remote"
-      : "Download to Local";
+      ? t("sftp.uploadToRemote")
+      : t("sftp.downloadToLocal");
 
   // Virtual window: only rows intersecting the viewport (+ overscan) mount,
   // which is what keeps directories with thousands of entries responsive.
@@ -395,9 +399,9 @@ export const FilePane = memo(function FilePane({
           {selectedFiles.length > 1 && (
             <span
               className="shrink-0 rounded-full bg-[var(--primary)]/15 px-1.5 py-0.5 text-[9px] font-semibold text-[var(--primary)]"
-              title={`${selectedFiles.length} items selected (⌘/Ctrl+A to select all, Esc to clear)`}
+              title={t("sftp.itemsSelectedTitle", { count: selectedFiles.length })}
             >
-              {selectedFiles.length} selected
+              {t("sftp.nSelected", { count: selectedFiles.length })}
             </span>
           )}
         </div>
@@ -412,8 +416,8 @@ export const FilePane = memo(function FilePane({
               }
             }}
             disabled={disabled}
-            title="Filter files"
-            aria-label="Filter files"
+            title={t("sftp.filterFiles")}
+            aria-label={t("sftp.filterFiles")}
             className={`rounded p-1 hover:bg-[var(--border)] hover:text-white disabled:opacity-30 ${
               isFilterOpen ? "text-[var(--primary)]" : "text-[var(--text-muted)]"
             }`}
@@ -434,8 +438,8 @@ export const FilePane = memo(function FilePane({
                     setIsFilterOpen(false);
                   }
                 }}
-                placeholder="Filter..."
-                aria-label="Filter files by name"
+                placeholder={t("sftp.filterPlaceholder")}
+                aria-label={t("sftp.filterByName")}
                 className="w-28 rounded border border-[var(--border)] bg-[var(--background)] py-1 pl-2 pr-6 text-[11px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none sm:w-40"
               />
               {filterQuery && (
@@ -444,8 +448,8 @@ export const FilePane = memo(function FilePane({
                     setFilterQuery("");
                     filterInputRef.current?.focus();
                   }}
-                  title="Clear filter"
-                  aria-label="Clear filter"
+                  title={t("sftp.clearFilter")}
+                  aria-label={t("sftp.clearFilter")}
                   className="absolute right-1 rounded p-0.5 text-[var(--text-muted)] hover:text-white"
                 >
                   <X size={12} />
@@ -456,7 +460,7 @@ export const FilePane = memo(function FilePane({
           <button
             onClick={() => onNavigate(parentPath(path))}
             disabled={disabled || path === "/" || !path}
-            title="Go up"
+            title={t("sftp.goUp")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white disabled:opacity-30"
           >
             <CornerLeftUp size={14} />
@@ -464,7 +468,7 @@ export const FilePane = memo(function FilePane({
           <button
             onClick={() => setIsCreatingFolder((v) => !v)}
             disabled={disabled}
-            title="New folder"
+            title={t("sftp.newFolder")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white disabled:opacity-30"
           >
             <FolderPlus size={14} />
@@ -472,7 +476,7 @@ export const FilePane = memo(function FilePane({
           <button
             onClick={onRefresh}
             disabled={disabled || loading}
-            title="Refresh"
+            title={t("common.refresh")}
             className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-white disabled:opacity-30"
           >
             <RotateCw size={14} className={loading ? "animate-spin" : ""} />
@@ -496,21 +500,21 @@ export const FilePane = memo(function FilePane({
             autoFocus
             value={newFolderName}
             onChange={(e) => setNewFolderName(e.target.value)}
-            placeholder="Folder name..."
+            placeholder={t("sftp.folderNamePlaceholder")}
             className="flex-1 rounded border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs text-[var(--text-primary)] focus:border-[var(--accent)] focus:outline-none"
           />
           <button
             type="submit"
             className="rounded bg-[var(--accent)] px-2.5 py-1 text-xs text-white"
           >
-            Create
+            {t("common.create")}
           </button>
           <button
             type="button"
             onClick={() => setIsCreatingFolder(false)}
             className="text-xs text-[var(--text-muted)] hover:text-white"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
         </form>
       )}
@@ -525,21 +529,21 @@ export const FilePane = memo(function FilePane({
         {loading ? (
           <div className="flex h-40 items-center justify-center text-xs text-[var(--text-muted)]">
             <Loader2 size={18} className="animate-spin mr-2 text-[var(--accent)]" />
-            Loading files...
+            {t("sftp.loadingFiles")}
           </div>
         ) : disabled ? (
           <div className="flex h-40 items-center justify-center text-xs text-[var(--text-muted)]">
-            Not connected
+            {t("sftp.notConnected")}
           </div>
         ) : entries.length === 0 ? (
           <div className="flex h-40 items-center justify-center text-xs text-[var(--text-muted)]">
-            Empty directory
+            {t("sftp.emptyDirectory")}
           </div>
         ) : filteredEntries.length === 0 ? (
           <div className="flex h-40 flex-col items-center justify-center gap-1 text-xs text-[var(--text-muted)]">
             <Search size={16} className="opacity-50" />
             <span>
-              No files matching "{filterQuery.trim()}"
+              {t("sftp.noFilesMatch", { query: filterQuery.trim() })}
             </span>
           </div>
         ) : (
@@ -550,7 +554,7 @@ export const FilePane = memo(function FilePane({
               className={`sticky top-0 z-10 h-8 border-b border-[var(--border)] bg-[var(--sidebar)] text-[10px] uppercase text-[var(--text-muted)] ${GRID_COLS}`}
             >
               <SortHeaderCell
-                label="Name"
+                label={t("sftp.colName")}
                 columnKey="name"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -558,7 +562,7 @@ export const FilePane = memo(function FilePane({
                 className="pl-3"
               />
               <SortHeaderCell
-                label="Size"
+                label={t("sftp.colSize")}
                 columnKey="size"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -566,7 +570,7 @@ export const FilePane = memo(function FilePane({
                 className="pr-2 text-right"
               />
               <SortHeaderCell
-                label="Modified"
+                label={t("sftp.colModified")}
                 columnKey="modified"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -574,7 +578,7 @@ export const FilePane = memo(function FilePane({
                 className="pr-3 text-right"
               />
               <SortHeaderCell
-                label="Kind"
+                label={t("sftp.colKind")}
                 columnKey="kind"
                 sortKey={sortKey}
                 sortDir={sortDir}
@@ -634,12 +638,12 @@ export const FilePane = memo(function FilePane({
                 {contextMenu.entry.is_dir ? (
                   <>
                     <Folder size={13} />
-                    <span>Open Folder</span>
+                    <span>{t("sftp.openFolder")}</span>
                   </>
                 ) : (
                   <>
                     <FileCode size={13} />
-                    <span>Edit File</span>
+                    <span>{t("sftp.editFile")}</span>
                   </>
                 )}
               </button>
@@ -668,15 +672,15 @@ export const FilePane = memo(function FilePane({
                   await navigator.clipboard.writeText(value);
                   showCopyToast(
                     menuTargets.length > 1
-                      ? `Copied ${menuTargets.length} paths`
-                      : "Copied file path"
+                      ? t("sftp.copiedPaths", { count: menuTargets.length })
+                      : t("sftp.copiedFilePath")
                   );
                   setContextMenu(null);
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group"
               >
                 <Copy size={13} />
-                <span>{multiMenu ? `Copy ${menuTargets.length} Paths` : "Copy Path"}</span>
+                <span>{multiMenu ? t("sftp.copyPaths", { count: menuTargets.length }) : t("sftp.copyPath")}</span>
               </button>
 
               <div className="my-1 h-[1px] bg-[var(--border)]" />
@@ -692,10 +696,10 @@ export const FilePane = memo(function FilePane({
                 <Trash2 size={13} />
                 <span>
                   {multiMenu
-                    ? `Delete ${menuTargets.length} Items`
+                    ? t("sftp.deleteItems", { count: menuTargets.length })
                     : contextMenu.entry.is_dir
-                      ? "Delete Folder"
-                      : "Delete File"}
+                      ? t("sftp.deleteFolder")
+                      : t("sftp.deleteFile")}
                 </span>
               </button>
             </>
@@ -711,7 +715,7 @@ export const FilePane = memo(function FilePane({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--primary)] hover:text-black transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <FolderPlus size={13} />
-                <span>New Folder</span>
+                <span>{t("sftp.newFolder")}</span>
               </button>
 
               {/* Select All */}
@@ -724,7 +728,7 @@ export const FilePane = memo(function FilePane({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <Check size={13} />
-                <span>Select All</span>
+                <span>{t("term.selectAll")}</span>
               </button>
 
               {/* Refresh */}
@@ -737,21 +741,21 @@ export const FilePane = memo(function FilePane({
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <RotateCw size={13} />
-                <span>Refresh Directory</span>
+                <span>{t("sftp.refreshDirectory")}</span>
               </button>
 
               {/* Copy Current Path */}
               <button
                 onClick={async () => {
                   await navigator.clipboard.writeText(path || "/");
-                  showCopyToast("Copied directory path");
+                  showCopyToast(t("sftp.copiedDirectoryPath"));
                   setContextMenu(null);
                 }}
                 disabled={disabled || !path}
                 className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-[var(--surface-container)] hover:text-[var(--text-primary)] transition-colors group disabled:opacity-40 disabled:pointer-events-none"
               >
                 <Copy size={13} />
-                <span>Copy Directory Path</span>
+                <span>{t("sftp.copyDirectoryPath")}</span>
               </button>
             </>
           )}
@@ -820,7 +824,7 @@ const FileRow = memo(function FileRow({
         {formatDate(entry.modified)}
       </div>
       <div role="gridcell" className="pr-2 text-right text-[11px] text-[var(--text-muted)]">
-        {entry.is_dir ? "Folder" : "File"}
+        {entry.is_dir ? t("sftp.folderKind") : t("sftp.fileKind")}
       </div>
       <div role="gridcell" className="pr-2 text-right">
         <div className="flex items-center justify-end gap-1">
@@ -830,7 +834,7 @@ const FileRow = memo(function FileRow({
                 e.stopPropagation();
                 onOpenFile(entry);
               }}
-              title="Edit file"
+              title={t("sftp.editFileTitle")}
               className="rounded p-0.5 text-[var(--text-muted)] opacity-0 hover:text-[var(--primary)] hover:bg-[var(--border)] group-hover:opacity-100 hover:opacity-100 transition-opacity"
             >
               <FileCode size={13} />
@@ -838,7 +842,7 @@ const FileRow = memo(function FileRow({
           )}
           <button
             onClick={(e) => onDelete(e, entry)}
-            title="Delete"
+            title={t("common.delete")}
             className="rounded p-0.5 text-[var(--text-muted)] opacity-0 hover:text-[var(--danger)] hover:bg-[var(--border)] group-hover:opacity-100 hover:opacity-100 transition-opacity"
           >
             <Trash2 size={12} />
