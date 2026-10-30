@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=
+Comment=Termimus - Self-hosted SSH & Server Manager
+Exec=termimus
+StartupWMClass=termimus
+Icon=termimus
+Name=Termimus
+Terminal=false
+Type=Application

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=Network;Utility;System;
+Comment=自托管 SSH 与服务器管理桌面应用（简体中文汉化版）
+Comment[en]=Self-hosted SSH & Server Manager (Simplified Chinese edition)
+Exec=termimus
+StartupWMClass=termimus
+Icon=termimus
+Name=Termimus
+Terminal=false
+Type=Application

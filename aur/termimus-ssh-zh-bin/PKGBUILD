@@ -1,0 +1,49 @@
+# Maintainer: Alano-ai <alanoc@126.com>
+# Contributor: Fadilah Riczky (upstream author of Termimus)
+
+# This is the Simplified-Chinese localized fork of Termimus.
+# Binary is built from https://github.com/Alano-ai/termimus-ssh-Chinese
+
+pkgname=termimus-ssh-zh-bin
+pkgver=0.7.1
+pkgrel=1
+pkgdesc="自托管 SSH 与服务器管理桌面应用（Termimus 的简体中文汉化版，Tauri + React）"
+arch=('x86_64')
+url="https://github.com/Alano-ai/termimus-ssh-Chinese"
+license=('MIT')
+provides=('termimus' 'termimus-ssh')
+conflicts=('termimus' 'termimus-ssh' 'termimus-ssh-bin')
+depends=('cairo' 'dbus' 'gdk-pixbuf2' 'glib2' 'gtk3' 'hicolor-icon-theme' 'libsoup3' 'openssl' 'webkit2gtk-4.1')
+source=("${pkgname}-${pkgver}.deb::${url}/releases/download/v${pkgver}/Termimus_${pkgver}_amd64.deb"
+        "Termimus.desktop.zh-CN"
+        "file://$startdir/../../LICENSE")
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+noextract=("${pkgname}-${pkgver}.deb")
+
+package() {
+    # Extract the .deb payload
+    bsdtar -xf "${srcdir}/${pkgname}-${pkgver}.deb" -C "${srcdir}"
+    bsdtar -xf "${srcdir}/data.tar.gz" -C "${srcdir}"
+
+    # Binaries
+    install -Dm755 "${srcdir}/usr/bin/termimus" "${pkgdir}/usr/bin/termimus"
+    ln -sf termimus "${pkgdir}/usr/bin/termimus-ssh"
+
+    # Icons
+    install -Dm644 "${srcdir}/usr/share/icons/hicolor/32x32/apps/termimus.png" \
+        "${pkgdir}/usr/share/icons/hicolor/32x32/apps/termimus.png"
+    install -Dm644 "${srcdir}/usr/share/icons/hicolor/128x128/apps/termimus.png" \
+        "${pkgdir}/usr/share/icons/hicolor/128x128/apps/termimus.png"
+    install -Dm644 "${srcdir}/usr/share/icons/hicolor/256x256@2/apps/termimus.png" \
+        "${pkgdir}/usr/share/icons/hicolor/256x256@2/apps/termimus.png"
+
+    # Desktop entry (zh-CN localized, overrides the English one from the .deb)
+    install -Dm644 "${srcdir}/Termimus.desktop.zh-CN" \
+        "${pkgdir}/usr/share/applications/Termimus.desktop"
+
+    # License (MIT, upstream copyright preserved — sourced from repo root)
+    install -Dm644 "${srcdir}/LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
