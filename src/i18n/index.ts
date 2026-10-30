@@ -1,12 +1,22 @@
-// 轻量 i18n 模块：静态中文词典 + 可插值的 t() 函数。
+// 轻量 i18n 模块：多语言词典 + 可插值的 t() 函数。
 // 组件、store、lib 均可直接 `import { t } from "…/i18n"` 使用。
-// 未来如需多语言切换，可在此处增加 `locale` 状态并按语言选择词典。
+// 语言切换：useLocaleStore.setLocale() 后调用 forceRefresh()，
+// 或在组件中订阅 useLocaleStore 实现自动刷新。
 
-import { zhCN, type I18nKey } from "./zh-CN";
+import { zhCN } from "./zh-CN";
+import { en } from "./en";
+import { getLocale } from "./locale";
 
 export type { I18nKey } from "./zh-CN";
+export { useLocaleStore, getLocale, type Locale } from "./locale";
 
 export type I18nParams = Record<string, string | number | null | undefined>;
+
+/** 全部词典：按 locale 索引。 */
+const DICTIONARIES: Record<string, Record<string, string>> = {
+  "zh-CN": zhCN as Record<string, string>,
+  en: en as Record<string, string>,
+};
 
 /** 将 "{name}" 形式的占位符替换为 params 中的值；空值替换为空字符串。 */
 export function interpolate(template: string, params?: I18nParams): string {
@@ -17,9 +27,11 @@ export function interpolate(template: string, params?: I18nParams): string {
   });
 }
 
-/** 按 key 取中文文案；key 不存在时回退为 key 本身。 */
-export function t(key: I18nKey, params?: I18nParams): string {
-  const template: string = zhCN[key] ?? key;
+/** 按 key 取当前语言文案；key 不存在时回退：当前语言 → zh-CN → key 本身。 */
+export function t(key: string, params?: I18nParams): string {
+  const locale = getLocale();
+  const dict: Record<string, string> | undefined = DICTIONARIES[locale] as Record<string, string> | undefined;
+  const template = dict?.[key] ?? (zhCN as Record<string, string>)[key] ?? key;
   return interpolate(template, params);
 }
 

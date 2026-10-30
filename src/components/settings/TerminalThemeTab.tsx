@@ -1,8 +1,8 @@
 import { Palette, Type, Highlighter, RotateCcw, Check } from "lucide-react";
-import { TERMINAL_THEMES } from "../../lib/terminalThemes";
+import { TERMINAL_THEMES, getThemeDescription } from "../../lib/terminalThemes";
 import {
   HIGHLIGHT_PATTERNS,
-  HIGHLIGHT_LABELS,
+  getHighlightLabel,
   type HighlightKey,
 } from "../../lib/highlightPatterns";
 import {
@@ -125,7 +125,7 @@ export function TerminalThemeTab() {
                     )}
                   </div>
                   <p className="text-[10px] text-[var(--text-muted)] truncate">
-                    {t.description}
+                    {getThemeDescription(t)}
                   </p>
                 </button>
               );
@@ -310,7 +310,7 @@ export function TerminalThemeTab() {
                   />
                   <div className="min-w-0">
                     <p className="font-semibold text-[var(--text-primary)]">
-                      {HIGHLIGHT_LABELS[key]}
+                      {getHighlightLabel(key)}
                     </p>
                     <p className="text-[10px] font-mono text-[var(--text-muted)] truncate">
                       {pattern?.regex.source.slice(0, 64)}
@@ -320,7 +320,7 @@ export function TerminalThemeTab() {
                 <Toggle
                   checked={highlight[key]}
                   onChange={(v) => setHighlight(key, v)}
-                  label={t("settings.toggleHighlight", { label: HIGHLIGHT_LABELS[key] })}
+                  label={t("settings.toggleHighlight", { label: getHighlightLabel(key) })}
                 />
               </div>
             );

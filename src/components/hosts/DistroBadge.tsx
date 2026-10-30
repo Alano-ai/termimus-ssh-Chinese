@@ -210,32 +210,35 @@ const DISTRO_MAP: Record<DistroType, DistroMeta> = {
   },
 };
 
-export const DISTRO_OPTIONS: { id: string; label: string }[] = [
-  { id: "", label: t("hosts.autoDetect") },
-  { id: "ubuntu", label: siUbuntu.title },
-  { id: "debian", label: siDebian.title },
-  { id: "alpine", label: siAlpinelinux.title },
-  { id: "arch", label: siArchlinux.title },
-  { id: "manjaro", label: siManjaro.title },
-  { id: "endeavour", label: siEndeavouros.title },
-  { id: "fedora", label: siFedora.title },
-  { id: "centos", label: siCentos.title },
-  { id: "rhel", label: "Red Hat (RHEL)" },
-  { id: "rocky", label: siRockylinux.title },
-  { id: "almalinux", label: siAlmalinux.title },
-  { id: "opensuse", label: siOpensuse.title },
-  { id: "kali", label: siKalilinux.title },
-  { id: "mint", label: siLinuxmint.title },
-  { id: "popos", label: siPopos.title },
-  { id: "elementary", label: siElementary.title },
-  { id: "nixos", label: siNixos.title },
-  { id: "gentoo", label: siGentoo.title },
-  { id: "void", label: siVoidlinux.title },
-  { id: "slackware", label: siSlackware.title },
-  { id: "raspbian", label: siRaspberrypi.title },
-  { id: "amazon", label: "Amazon Linux" },
-  { id: "generic", label: t("hosts.genericLinux") },
-];
+/** 发行版下拉选项（渲染期求值，跟随当前语言）。 */
+export function getDistroOptions(): { id: string; label: string }[] {
+  return [
+    { id: "", label: t("hosts.autoDetect") },
+    { id: "ubuntu", label: siUbuntu.title },
+    { id: "debian", label: siDebian.title },
+    { id: "alpine", label: siAlpinelinux.title },
+    { id: "arch", label: siArchlinux.title },
+    { id: "manjaro", label: siManjaro.title },
+    { id: "endeavour", label: siEndeavouros.title },
+    { id: "fedora", label: siFedora.title },
+    { id: "centos", label: siCentos.title },
+    { id: "rhel", label: "Red Hat (RHEL)" },
+    { id: "rocky", label: siRockylinux.title },
+    { id: "almalinux", label: siAlmalinux.title },
+    { id: "opensuse", label: siOpensuse.title },
+    { id: "kali", label: siKalilinux.title },
+    { id: "mint", label: siLinuxmint.title },
+    { id: "popos", label: siPopos.title },
+    { id: "elementary", label: siElementary.title },
+    { id: "nixos", label: siNixos.title },
+    { id: "gentoo", label: siGentoo.title },
+    { id: "void", label: siVoidlinux.title },
+    { id: "slackware", label: siSlackware.title },
+    { id: "raspbian", label: siRaspberrypi.title },
+    { id: "amazon", label: "Amazon Linux" },
+    { id: "generic", label: t("hosts.genericLinux") },
+  ];
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Distro resolution (stored os_icon -> label/tag heuristic -> generic Linux)

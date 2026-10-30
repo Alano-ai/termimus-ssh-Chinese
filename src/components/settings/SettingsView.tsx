@@ -21,12 +21,14 @@ import {
   Cpu,
   Layers,
   Cloud,
+  Languages,
   ExternalLink,
   ArrowUpCircle,
 } from "lucide-react";
 import { BackupRestoreSection } from "../vault/BackupRestoreSection";
 import { SyncSection } from "../sync/SyncSection";
 import { TerminalThemeTab } from "./TerminalThemeTab";
+import { GeneralTab } from "./GeneralTab";
 import { useVaultStore } from "../../stores/useVaultStore";
 import { useKnownHostsStore } from "../../stores/useKnownHostsStore";
 import { useConfirmStore } from "../../stores/useConfirmStore";
@@ -34,17 +36,17 @@ import { useUpdateStore } from "../../stores/useUpdateStore";
 import {
   useSettingsStore,
   AutoLockPolicy,
-  AUTO_LOCK_LABELS,
+  getAutoLockLabels,
 } from "../../stores/useSettingsStore";
 import { CustomSelect } from "../ui/CustomSelect";
 import { api } from "../../lib/api";
 import { openExternalUrl } from "../../lib/openUrl";
 import { t } from "../../i18n";
 
-type SettingsTab = "security" | "terminal" | "sync" | "known_hosts" | "backup" | "about";
+type SettingsTab = "general" | "security" | "terminal" | "sync" | "known_hosts" | "backup" | "about";
 
 export function SettingsView() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("security");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("general");
   const { knownHosts } = useKnownHostsStore();
   const { hasUpdate } = useUpdateStore();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +58,7 @@ export function SettingsView() {
     badge?: number;
     badgeDot?: boolean;
   }[] = [
+    { id: "general", label: t("settings.general"), icon: Languages },
     { id: "security", label: t("settings.securityVault"), icon: Lock },
     { id: "terminal", label: t("settings.tabTerminal"), icon: Palette },
     { id: "sync", label: t("settings.selfHostedSync"), icon: Cloud },
@@ -145,6 +148,7 @@ export function SettingsView() {
         className="flex-1 overflow-y-auto px-6 py-5 [scrollbar-gutter:stable]"
       >
         <div className="w-full">
+          {activeTab === "general" && <GeneralTab />}
           {activeTab === "security" && <SecurityVaultTab />}
           {activeTab === "terminal" && <TerminalThemeTab />}
           {activeTab === "sync" && <SyncSection />}
@@ -399,9 +403,9 @@ function SecurityVaultTab() {
               <CustomSelect
                 value={autoLockPolicy}
                 onChange={(val) => setAutoLockPolicy(val as AutoLockPolicy)}
-                options={(Object.keys(AUTO_LOCK_LABELS) as AutoLockPolicy[]).map((key) => ({
+                options={(Object.keys(getAutoLockLabels()) as AutoLockPolicy[]).map((key) => ({
                   value: key,
-                  label: AUTO_LOCK_LABELS[key],
+                  label: getAutoLockLabels()[key],
                 }))}
               />
             </div>

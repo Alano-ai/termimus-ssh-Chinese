@@ -14,8 +14,10 @@ export interface TerminalSemanticColors {
 
 export interface TerminalTheme {
   id: string;
+  /** 主题名（品牌名，不翻译）。 */
   label: string;
-  description: string;
+  /** 描述文案的 i18n 键；由 getThemeDescription() 渲染期求值。 */
+  descriptionKey: string;
   /** Full xterm theme (16 ANSI + chrome colors). */
   xterm: ITheme;
   /** Semantic colors used for keyword highlighting + settings preview. */
@@ -35,7 +37,7 @@ export interface TerminalTheme {
 const OBSIDIAN: TerminalTheme = {
   id: "obsidian",
   label: "Terminal Obsidian",
-  description: t("themes.obsidianDesc"),
+  descriptionKey: "themes.obsidianDesc",
   xterm: {
     background: "#0a0e14",
     foreground: "#f0f6fc",
@@ -76,7 +78,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "termius-green",
     label: "Termius Green",
-    description: t("themes.termiusGreenDesc"),
+    descriptionKey: "themes.termiusGreenDesc",
     xterm: {
       background: "#14171c",
       foreground: "#5eeaa0",
@@ -119,7 +121,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "everforest",
     label: "Everforest",
-    description: t("themes.everforestDesc"),
+    descriptionKey: "themes.everforestDesc",
     xterm: {
       background: "#2b3339",
       foreground: "#d3c6aa",
@@ -162,7 +164,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "one-dark",
     label: "One Dark",
-    description: t("themes.oneDarkDesc"),
+    descriptionKey: "themes.oneDarkDesc",
     xterm: {
       background: "#282c34",
       foreground: "#abb2bf",
@@ -200,7 +202,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "dracula",
     label: "Dracula",
-    description: t("themes.draculaDesc"),
+    descriptionKey: "themes.draculaDesc",
     xterm: {
       background: "#282a36",
       foreground: "#f8f8f2",
@@ -238,7 +240,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "nord",
     label: "Nord",
-    description: t("themes.nordDesc"),
+    descriptionKey: "themes.nordDesc",
     xterm: {
       background: "#2e3440",
       foreground: "#d8dee9",
@@ -276,7 +278,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "solarized-dark",
     label: "Solarized Dark",
-    description: t("themes.solarizedDarkDesc"),
+    descriptionKey: "themes.solarizedDarkDesc",
     xterm: {
       background: "#002b36",
       foreground: "#839496",
@@ -314,7 +316,7 @@ export const TERMINAL_THEMES: TerminalTheme[] = [
   {
     id: "light",
     label: "Paper Light",
-    description: t("themes.paperLightDesc"),
+    descriptionKey: "themes.paperLightDesc",
     xterm: {
       background: "#ffffff",
       foreground: "#1a1a1a",
@@ -355,6 +357,11 @@ export const DEFAULT_TERMINAL_THEME_ID = "obsidian";
 
 export function getTerminalTheme(id: string): TerminalTheme {
   return TERMINAL_THEMES.find((t) => t.id === id) ?? TERMINAL_THEMES[0];
+}
+
+/** 主题描述文案（渲染期求值，跟随当前语言）。 */
+export function getThemeDescription(theme: TerminalTheme): string {
+  return t(theme.descriptionKey);
 }
 
 export interface TerminalAppearance {

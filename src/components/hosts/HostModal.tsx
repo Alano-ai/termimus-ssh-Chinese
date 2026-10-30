@@ -14,7 +14,7 @@ import {
 import { useHostStore } from "../../stores/useHostStore";
 import { useKeychainStore } from "../../stores/useKeychainStore";
 import { api, HostInput } from "../../lib/api";
-import { DistroBadge, DISTRO_OPTIONS } from "./DistroBadge";
+import { DistroBadge, getDistroOptions } from "./DistroBadge";
 import { CustomSelect } from "../ui/CustomSelect";
 import { t } from "../../i18n";
 
@@ -658,7 +658,7 @@ export function HostModal({ onOpenKeychain }: HostModalProps = {}) {
                 <CustomSelect
                   value={osIcon}
                   onChange={setOsIcon}
-                  options={DISTRO_OPTIONS.map((opt) => ({
+                  options={getDistroOptions().map((opt) => ({
                     value: opt.id,
                     label: opt.label,
                   }))}

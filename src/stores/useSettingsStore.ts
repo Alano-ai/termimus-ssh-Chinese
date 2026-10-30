@@ -9,13 +9,16 @@ export type AutoLockPolicy =
   | "1hour"
   | "on_focus_loss";
 
-export const AUTO_LOCK_LABELS: Record<AutoLockPolicy, string> = {
-  never: t("settings.autoLockNever"),
-  on_close: t("settings.autoLockOnClose"),
-  "15min": t("settings.autoLock15min"),
-  "1hour": t("settings.autoLock1hour"),
-  on_focus_loss: t("settings.autoLockOnFocusLoss"),
-};
+/** 自动锁定策略的可读标签（渲染期求值，跟随当前语言）。 */
+export function getAutoLockLabels(): Record<AutoLockPolicy, string> {
+  return {
+    never: t("settings.autoLockNever"),
+    on_close: t("settings.autoLockOnClose"),
+    "15min": t("settings.autoLock15min"),
+    "1hour": t("settings.autoLock1hour"),
+    on_focus_loss: t("settings.autoLockOnFocusLoss"),
+  };
+}
 
 interface SettingsState {
   useOsKeyring: boolean;

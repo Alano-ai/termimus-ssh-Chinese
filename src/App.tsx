@@ -27,6 +27,7 @@ import { useKeychainStore } from "./stores/useKeychainStore";
 import { useUpdateStore } from "./stores/useUpdateStore";
 import { useAutoLock } from "./hooks/useAutoLock";
 import { useLiveSync } from "./hooks/useLiveSync";
+import { useLocaleStore } from "./i18n/locale";
 
 // Helper component for native-feel stacked views:
 // Keeps views mounted in the DOM once visited, switching visibility in 0ms
@@ -49,6 +50,8 @@ function PageView({ active, children }: { active: boolean; children: React.React
 function App() {
   const [activeNav, setActiveNav] = useState<ActiveTab>("hosts");
   const [visitedTabs, setVisitedTabs] = useState<Set<ActiveTab>>(() => new Set(["hosts"]));
+  // 语言切换计数：变化时以 key 重挂载整棵树，让全部 t() 调用立即生效。
+  const localeRefreshKey = useLocaleStore((s) => s.refreshKey);
 
   const isUnlocked = useVaultStore((s) => s.isUnlocked);
   const isAppLocked = useVaultStore((s) => s.isAppLocked);
@@ -136,7 +139,7 @@ function App() {
   const showTerminal = activeNav === "terminal";
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--canvas)] text-[var(--text-primary)]">
+    <div key={localeRefreshKey} className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--canvas)] text-[var(--text-primary)]">
       {/* Invisible edge/corner handles restoring OS resize cursors on this frameless window */}
       <ResizeHandles />
 
